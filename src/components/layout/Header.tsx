@@ -40,7 +40,7 @@ const Header = () => {
                 variant="ghost" 
                 size="icon"
                 onClick={toggleTheme}>
-                {isDark ? <Sun size={"icon"} /> : <Moon size={"icon"} />}
+                {isDark ? <Sun/> : <Moon/>}
            </Button>
 
             <Button variant="ghost" className="relative h-10 w-10 rounded-full">

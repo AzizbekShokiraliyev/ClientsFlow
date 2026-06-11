@@ -8,6 +8,7 @@ import Clients from '@/components/clients/Clients';
 import Deals from '@/components/deals/Deals';
 import Kanban from '@/components/kanban/Kanban';
 import Tasks from '@/components/tasks/Tasks';
+import ClientDetail from '@/components/clients/ClientDetail';
 
 export const router = createBrowserRouter([
   {path: "/", element: <AppLayout />},
@@ -19,7 +20,10 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "dashboard", element: <Dashboard /> },
-      { path: "clients", element: <Clients /> },
+      { path: "clients", children: [
+        {index: true, element: <Clients/>},
+        { path: ":id", element: <ClientDetail /> }
+      ] },
       { path: "tasks", element: <Tasks /> },
       { path: "deals", element: <Deals /> },
       { path: "kanban", element: <Kanban /> },

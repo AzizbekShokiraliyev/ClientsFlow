@@ -6,9 +6,9 @@ import { Button } from "../ui/button"
 const navItems = [
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { label: "Clients",   path: "/clients",   icon: Users },
-  { label: "Tasks",     path: "/tasks",     icon: ListChecks },
-  { label: "Kanban",    path: "/kanban",    icon: KanbanSquare },
   { label: "Deals",     path: "/deals",     icon: Briefcase },
+  { label: "Kanban",    path: "/kanban",    icon: KanbanSquare },
+  { label: "Tasks",     path: "/tasks",     icon: ListChecks },
 ]
 
 const Sidebar = () => {

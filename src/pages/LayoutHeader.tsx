@@ -21,7 +21,7 @@ const LayoutHeader = () => {
             size="icon"
             onClick={toggleTheme}
           >
-            {isDark ? <Sun size={"icon"} /> : <Moon size={"icon"} />}
+            {isDark ? <Sun size={"icon"} /> : <Moon size={"icon"}/>}
           </Button>
 
           <Link to='/login'><Button variant="outline" size="lg">Login</Button></Link>
