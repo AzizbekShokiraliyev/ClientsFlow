@@ -3,21 +3,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import type { Client } from "@/interface/Interface"
+import type { ClientModalProps } from "@/interface/Interface"
 import { Bookmark, Pencil, Plus } from "lucide-react"
-
-interface ClientModalProps{
-    client?: Client;
-}
 
 const ClientModal = ({ client }: ClientModalProps) => {
     const isEdit = !!client
   return (
-    <div>
         <Dialog>
             <form>
                 <DialogTrigger asChild>
-                    {isEdit ? (<Button variant="secondary" size="icon"><Pencil className="h-4 w-4" /></Button>) : (<Button size='lg'><span><Plus/></span>Add client</Button>)}
+                    {isEdit ? (<Button variant="secondary" size="lg"><Pencil/></Button>) : (<Button size='lg'><span><Plus/></span>Add client</Button>)}
                 </DialogTrigger>
 
                 <DialogContent className="sm:max-w-sm">
@@ -26,28 +21,33 @@ const ClientModal = ({ client }: ClientModalProps) => {
                     </div>
 
                     <FieldGroup>
-                        <div className="flex gap-4 items-center">
-                            <Field>
-                                <Label>First name</Label>
-                                <Input name="firstName" defaultValue={client?.firstName ?? ""} required/>
-                            </Field>
-                            <Field>
-                                <Label>Last name</Label>
-                                <Input name="lastName" defaultValue={client?.lastName ?? ""} required/>
-                            </Field>
-                        </div>
-
+                        <Field>
+                            <Label>Full name</Label>
+                            <Input 
+                                name="firstName" 
+                                placeholder="John Doe"
+                                defaultValue={client?.fullName ?? ""} required/>
+                        </Field>
                         <Field>
                             <Label>Email</Label>
-                            <Input name="email" type="email" defaultValue={client?.email ?? ""} required/>
+                            <Input 
+                                name="email" 
+                                placeholder="example@gmail.com"
+                                type="email" defaultValue={client?.email ?? ""} required/>
                         </Field>
                         <Field>
                             <Label>Phone number</Label>
-                            <Input name="phoneNumber" type="tel" defaultValue={client?.phoneNumber ?? ""} required/>
+                            <Input 
+                                name="phoneNumber" 
+                                placeholder="+123456789"
+                                type="tel" defaultValue={client?.phoneNumber ?? ""} required/>
                         </Field>
                         <Field>
                             <Label>Company name</Label>
-                            <Input name="company" defaultValue={client?.company ?? ""} required/>
+                            <Input 
+                                name="company" 
+                                placeholder="Google"
+                                defaultValue={client?.company ?? ""} required/>
                         </Field>
 
                         <div className="flex items-end gap-2">
@@ -56,22 +56,13 @@ const ClientModal = ({ client }: ClientModalProps) => {
                                 <Input name="date" type="date" defaultValue={client?.updated_at?.split("T")[0]}/>
                             </div>
                             <Button type="submit">
-                            {isEdit ? (
-                                <>
-                                <Bookmark/> Save changes
-                                </>
-                            ) : (
-                                <>
-                                <Plus/> Add
-                                </>
-                            )}
+                            {isEdit ? (<><Bookmark/> Save changes</>) : (<><Plus/> Add</>)}
                             </Button>
                         </div>
                     </FieldGroup>
                 </DialogContent>
             </form>
         </Dialog>
-    </div>
   )
 }
 

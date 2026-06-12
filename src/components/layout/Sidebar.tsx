@@ -1,14 +1,13 @@
 import {Sidebar as MainSidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter} from "../ui/sidebar"
-import {LayoutDashboard, Users, Briefcase, KanbanSquare, ListChecks, LogOut, ChevronRight} from "lucide-react"
+import {LayoutDashboard, Users, Briefcase, KanbanSquare, LogOut, ChevronRight} from "lucide-react"
 import { Link, NavLink } from "react-router-dom"
 import { Button } from "../ui/button"
 
 const navItems = [
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { label: "Clients",   path: "/clients",   icon: Users },
-  { label: "Deals",     path: "/deals",     icon: Briefcase },
-  { label: "Kanban",    path: "/kanban",    icon: KanbanSquare },
-  { label: "Tasks",     path: "/tasks",     icon: ListChecks },
+  { label: "Clients", path: "/clients", icon: Users },
+  { label: "Deals", path: "/deals", icon: Briefcase },
+  { label: "Kanban", path: "/kanban", icon: KanbanSquare },
 ]
 
 const Sidebar = () => {

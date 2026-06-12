@@ -3,7 +3,8 @@ import { ArrowLeft, Building2, Mail, Phone, User, Pencil, Trash2 } from 'lucide-
 import { Link } from 'react-router-dom'
 import { Button } from '../ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
-import { ButtonGroup } from '../ui/button-group'
+import { ButtonGroup, ButtonGroupSeparator } from '../ui/button-group'
+import { ClientStatusStyles } from '../shared/StyleStatus'
 
 type DealStatus = 'New' | 'In Progress' | 'Won' | 'Lost'
 
@@ -27,13 +28,6 @@ const deals: Deal[] = [
   { id: '2', title: 'SEO Package', status: 'New', created_at: '2026-02-03T00:00:00Z' },
   { id: '3', title: 'Mobile App', status: 'Won', created_at: '2026-03-20T00:00:00Z' },
 ]
-
-const statusStyles: Record<DealStatus, string> = {
-  'New': 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  'In Progress': 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-  'Won': 'bg-green-500/10 text-green-400 border-green-500/20',
-  'Lost': 'bg-red-500/10 text-red-400 border-red-500/20',
-}
 
 const ClientDetail = () => {
   return (
@@ -95,7 +89,7 @@ const ClientDetail = () => {
                   <TableRow key={deal.id}>
                     <TableCell className="font-medium">{deal.title}</TableCell>
                     <TableCell>
-                      <span className={`text-xs font-medium px-2.5 py-1 rounded-md border text-center ${statusStyles[deal.status]}`}>
+                      <span className={`text-xs font-medium px-2.5 py-1 rounded-md border text-center ${ClientStatusStyles[deal.status]}`}>
                         {deal.status}
                       </span>
                     </TableCell>
@@ -116,6 +110,7 @@ const ClientDetail = () => {
                               onClick={() => {}}>
                               <Pencil size='icon' />
                             </Button>
+                            <ButtonGroupSeparator/>
                             <Button
                               variant="outline"
                               size="icon"

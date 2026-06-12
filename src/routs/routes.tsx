@@ -7,7 +7,6 @@ import Dashboard from '@/components/dashboard/Dashboard';
 import Clients from '@/components/clients/Clients';
 import Deals from '@/components/deals/Deals';
 import Kanban from '@/components/kanban/Kanban';
-import Tasks from '@/components/tasks/Tasks';
 import ClientDetail from '@/components/clients/ClientDetail';
 
 export const router = createBrowserRouter([
@@ -24,7 +23,6 @@ export const router = createBrowserRouter([
         {index: true, element: <Clients/>},
         { path: ":id", element: <ClientDetail /> }
       ] },
-      { path: "tasks", element: <Tasks /> },
       { path: "deals", element: <Deals /> },
       { path: "kanban", element: <Kanban /> },
     ]

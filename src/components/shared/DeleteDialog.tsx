@@ -13,15 +13,15 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 
 interface DeleteDialogProps {
-  clientName: string;
+  deleteTitle: string;
   onConfirm: () => void;
 }
 
-export function DeleteDialog({ clientName, onConfirm }: DeleteDialogProps) {
+export function DeleteDialog({ deleteTitle, onConfirm }: DeleteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="secondary" size="icon" className="text-destructive hover:text-destructive">
+        <Button variant="secondary" size="lg" className="text-destructive hover:text-destructive">
           <Trash2 className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>
@@ -29,7 +29,7 @@ export function DeleteDialog({ clientName, onConfirm }: DeleteDialogProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete <strong>{`${clientName}`}</strong> and all associated data.
+            This will permanently delete <strong>{`${deleteTitle}`}</strong> and all associated data.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
