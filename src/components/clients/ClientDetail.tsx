@@ -53,20 +53,21 @@ const ClientDetail = () => {
           </div>
           <div className="flex gap-4 text-[15px] text-muted-foreground py-1">
             <div className="flex items-center gap-2">
-              <Mail />
+              <Mail className='w-5 h-5'/>
               {client.email}
             </div>
             <div className="flex items-center gap-2">
-              <Phone />
+              <Phone className='w-5 h-5'/>
               {client.phone}
             </div>
             <div className="flex items-center gap-2">
-              <Building2/>
+              <Building2 className='w-5 h-5'/>
               {client.company}
             </div>
           </div>
         </CardContent>
         </Card>
+        
         <Card>      
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base font-semibold">Deals</CardTitle>
@@ -94,7 +95,7 @@ const ClientDetail = () => {
                   <TableRow key={deal.id}>
                     <TableCell className="font-medium">{deal.title}</TableCell>
                     <TableCell>
-                      <span className={`text-xs font-medium px-2.5 py-1 rounded-md border ${statusStyles[deal.status]}`}>
+                      <span className={`text-xs font-medium px-2.5 py-1 rounded-md border text-center ${statusStyles[deal.status]}`}>
                         {deal.status}
                       </span>
                     </TableCell>
@@ -132,7 +133,6 @@ const ClientDetail = () => {
           </Table>
         </CardContent>
       </Card>
-
     </div>
   )
 }

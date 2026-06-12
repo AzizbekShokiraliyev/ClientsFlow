@@ -13,12 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 
 interface DeleteDialogProps {
-  firstName: string;
-  lastName: string
+  clientName: string;
   onConfirm: () => void;
 }
 
-export function DeleteDialog({ firstName, lastName, onConfirm }: DeleteDialogProps) {
+export function DeleteDialog({ clientName, onConfirm }: DeleteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -30,7 +29,7 @@ export function DeleteDialog({ firstName, lastName, onConfirm }: DeleteDialogPro
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete <strong>{`${firstName} ${lastName}`}</strong> and all associated data.
+            This will permanently delete <strong>{`${clientName}`}</strong> and all associated data.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

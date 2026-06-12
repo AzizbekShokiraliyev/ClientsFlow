@@ -29,25 +29,25 @@ const ClientModal = ({ client }: ClientModalProps) => {
                         <div className="flex gap-4 items-center">
                             <Field>
                                 <Label>First name</Label>
-                                <Input name="firstName" defaultValue={client?.firstName ?? "John"} required/>
+                                <Input name="firstName" defaultValue={client?.firstName ?? ""} required/>
                             </Field>
                             <Field>
                                 <Label>Last name</Label>
-                                <Input name="lastName" defaultValue={client?.lastName ?? "Doe"} required/>
+                                <Input name="lastName" defaultValue={client?.lastName ?? ""} required/>
                             </Field>
                         </div>
 
                         <Field>
                             <Label>Email</Label>
-                            <Input name="email" type="email" defaultValue={client?.email ?? "example@gmail.com"} required/>
+                            <Input name="email" type="email" defaultValue={client?.email ?? ""} required/>
                         </Field>
                         <Field>
                             <Label>Phone number</Label>
-                            <Input name="phoneNumber" type="tel" defaultValue={client?.phoneNumber ?? "+123456789"} required/>
+                            <Input name="phoneNumber" type="tel" defaultValue={client?.phoneNumber ?? ""} required/>
                         </Field>
                         <Field>
                             <Label>Company name</Label>
-                            <Input name="company" defaultValue={client?.company ?? "Google"} required/>
+                            <Input name="company" defaultValue={client?.company ?? ""} required/>
                         </Field>
 
                         <div className="flex items-end gap-2">
