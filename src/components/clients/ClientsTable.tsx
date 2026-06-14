@@ -10,6 +10,7 @@ const user: Client[] = [
     user_id: "u1",
     fullName: "Azizbek Shokiraliyev",
     email: "aziz@gmail.com",
+    phone: "+998931510604",      
     phoneNumber: "+998931510604",
     company: "GL Solutions",
     created_at: "2024-02-10T00:00:00Z",

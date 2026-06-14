@@ -1,7 +1,7 @@
 const DealClientDetail = () => {
   return (
     <div>
-      
+        salom
     </div>
   )
 }

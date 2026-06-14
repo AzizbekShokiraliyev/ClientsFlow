@@ -1,13 +1,14 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import AppLayout from '@/pages/AppLayout';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
+import Register from '@/components/auth/Register';
 import MainLayout from '@/components/layout/MainLayout';
 import Dashboard from '@/components/dashboard/Dashboard';
 import Clients from '@/components/clients/Clients';
 import Deals from '@/components/deals/Deals';
 import Kanban from '@/components/kanban/Kanban';
 import ClientDetail from '@/components/clients/ClientDetail';
+import DealClientDetail from '@/components/deals/DealClientDetail';
+import Login from '@/components/auth/Login';
 
 export const router = createBrowserRouter([
   {path: "/", element: <AppLayout />},
@@ -23,7 +24,10 @@ export const router = createBrowserRouter([
         {index: true, element: <Clients/>},
         { path: ":id", element: <ClientDetail /> }
       ] },
-      { path: "deals", element: <Deals /> },
+      { path: "deals", children: [
+        {index: true, element: <Deals />},
+        {path: ":id", element: <DealClientDetail/>}
+      ] },
       { path: "kanban", element: <Kanban /> },
     ]
   },
