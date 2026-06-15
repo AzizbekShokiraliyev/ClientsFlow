@@ -15,16 +15,26 @@ export interface Client {
   updated_at: string
 }
 
+export interface ClientsTableProps {
+  data: Client[]; 
+}
+
 export interface Deal {
   id: string
   user_id: string
-  client_id: string
+  client_id?: string
   title: string
-  description?: string | null
   status: DealStatus
-  due_date?: string | null
   created_at: string
   updated_at: string
+}
+
+export interface DealTableProps {
+  deal: Deal[]
+}
+
+export interface DealModalProps {
+  deal?: Deal
 }
 
 export interface Task {
@@ -46,6 +56,10 @@ export interface ClientDeal {
   created_at: string
 }
 
+export interface DealClientModalProps {
+  deal?: ClientDeal
+}
+
 export interface KanbanDeal {
   id: string
   title: string
@@ -57,10 +71,6 @@ export interface StatCardProps {
   title: string
   value: number
   icon: ReactNode
-}
-
-export interface DealModalProps {
-  deal?: Deal
 }
 
 export interface ClientModalProps {

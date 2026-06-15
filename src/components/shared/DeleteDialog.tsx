@@ -15,13 +15,14 @@ import { Trash2 } from "lucide-react";
 interface DeleteDialogProps {
   deleteTitle: string;
   onConfirm: () => void;
+  disabled: boolean
 }
 
-export function DeleteDialog({ deleteTitle, onConfirm }: DeleteDialogProps) {
+export function DeleteDialog({ deleteTitle, onConfirm, disabled }: DeleteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="secondary" size="lg" className="text-destructive hover:text-destructive">
+        <Button variant="outline" size="icon" className="rounded-none border-0 h-8 w-8 text-destructive hover:text-destructive" disabled={disabled}>
           <Trash2 className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>

@@ -7,7 +7,6 @@ import Clients from '@/components/clients/Clients';
 import Deals from '@/components/deals/Deals';
 import Kanban from '@/components/kanban/Kanban';
 import ClientDetail from '@/components/clients/ClientDetail';
-import DealClientDetail from '@/components/deals/DealClientDetail';
 import Login from '@/components/auth/Login';
 
 export const router = createBrowserRouter([
@@ -24,10 +23,7 @@ export const router = createBrowserRouter([
         {index: true, element: <Clients/>},
         { path: ":id", element: <ClientDetail /> }
       ] },
-      { path: "deals", children: [
-        {index: true, element: <Deals />},
-        {path: ":id", element: <DealClientDetail/>}
-      ] },
+      { path: "deals", element: <Deals />},
       { path: "kanban", element: <Kanban /> },
     ]
   },

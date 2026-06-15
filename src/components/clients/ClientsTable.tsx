@@ -1,24 +1,11 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
-import type { Client } from "@/interface/Interface"
 import { useNavigate } from "react-router-dom"
 import { DeleteDialog } from "../shared/DeleteDialog"
 import ClientModal from "./ClientModal"
+import { ButtonGroup, ButtonGroupSeparator } from "../ui/button-group"
+import type { ClientsTableProps } from "@/interface/Interface"
 
-const user: Client[] = [
-  {
-    id: "1",
-    user_id: "u1",
-    fullName: "Azizbek Shokiraliyev",
-    email: "aziz@gmail.com",
-    phone: "+998931510604",      
-    phoneNumber: "+998931510604",
-    company: "GL Solutions",
-    created_at: "2024-02-10T00:00:00Z",
-    updated_at: "2026-05-10T00:00:00Z",
-  },
-]
-
-const ClientsTable = () => {
+const ClientsTable = ({ data }: ClientsTableProps) => {
   const navigate = useNavigate()
 
   return (
@@ -35,14 +22,14 @@ const ClientsTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {user.length === 0 ? (
+          {data.length === 0 ? (
             <TableRow>
               <TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground" >
                 No clients found.
               </TableCell>
             </TableRow>
           ) : (
-            user.map((client) => (
+            data.map((client) => (
               <TableRow key={client.id} onClick={() => navigate(`/clients/${client.id}`)}>
                 <TableCell>{client.fullName}</TableCell>
                 <TableCell>{client.email ?? "—"}</TableCell>
@@ -55,13 +42,14 @@ const ClientsTable = () => {
                     day: "numeric",
                   })}
                 </TableCell>
-                <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                  <div className="inline-flex items-center">
-                    <div className="flex items-center">
-                        <ClientModal client={client} />
-                        <DeleteDialog deleteTitle={`${client.fullName}`}  onConfirm={() => console.log("Deleted", client.id)}/>
-                    </div>
-                  </div>
+                <TableCell className="text-right">
+                      <div className="inline-flex items-center rounded-md border divide-x overflow-hidden">
+                        <ButtonGroup>
+                            <ClientModal client={client} />
+                            <ButtonGroupSeparator/>
+                            <DeleteDialog deleteTitle={`${client.fullName}`}  onConfirm={() => console.log("Deleted", client.id)}/>
+                        </ButtonGroup>
+                      </div>
                 </TableCell>
               </TableRow>
             ))

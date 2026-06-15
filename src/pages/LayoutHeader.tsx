@@ -1,12 +1,12 @@
 "use client"
-
+import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button"
-import { useDarkMode } from "@/hooks/useDarkMode";
 import { Moon, Sun } from 'lucide-react';
 import { Link } from "react-router-dom";
 
 const LayoutHeader = () => {
-  const {isDark, toggleTheme} = useDarkMode()
+  const {theme, setTheme} = useTheme()
+  const isDark = theme === "dark";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
@@ -17,11 +17,10 @@ const LayoutHeader = () => {
 
         <div className="flex items-center gap-2">
           <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={toggleTheme}
-          >
-            {isDark ? <Sun size={"icon"} /> : <Moon size={"icon"}/>}
+          variant="ghost" 
+          size="icon"
+          onClick={() => setTheme(isDark ? "light" : "dark")}>
+          {isDark ? <Sun size={20} /> : <Moon size={20}/>}
           </Button>
 
           <Link to='/login'><Button variant="outline" size="lg">Login</Button></Link>

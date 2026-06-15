@@ -1,79 +1,50 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
-import type { Deal } from '@/interface/Interface'
 import { DeleteDialog } from '../shared/DeleteDialog'
 import { cn } from '@/lib/utils'
 import DealModal from './DealModal'
-import { DealStatusStyles } from '../shared/StyleStatus'
+import { ButtonGroup, ButtonGroupSeparator } from '../ui/button-group'
+import { UseDeal, useDealDelate } from '@/hooks/useDeal'
 
-const deal: Deal[] = [
-  {
-    id: "1",
-    user_id: "u1",
-    client_id: "c1",
-    title: "Wireframes",
-    description: "Lorem, ipsum dolor",
-    status: "Todo",
-    due_date: "2024-02-10T00:00:00Z",
-    created_at: "2024-02-10T00:00:00Z",
-    updated_at: "2024-02-10T00:00:00Z",
-  },
-  {
-    id: "2",
-    user_id: "u1",
-    client_id: "c1",
-    title: "Google",
-    description: "Lorem, ipsum dolor",
-    status: "Done",
-    due_date: "2024-02-10T00:00:00Z",
-    created_at: "2024-02-10T00:00:00Z",
-    updated_at: "2024-02-10T00:00:00Z",
-  },
-  {
-    id: "3",
-    user_id: "u1",
-    client_id: "c1",
-    title: "Amazon",
-    description: "Lorem, ipsum dolor",
-    status: "In Progress",
-    due_date: "2024-02-10T00:00:00Z",
-    created_at: "2024-02-10T00:00:00Z",
-    updated_at: "2024-02-10T00:00:00Z",
-  },
-]
 
 const DealTable = () => {
+  const {data: deals, isLoading, isError} = UseDeal()
+  const {mutate: deleteDeal, isPending: deleting} = useDealDelate()
+
+  if (isLoading) return <div className="p-10 text-center">Loading deals...</div>
+  if (isError) return <div className="p-10 text-center text-red-500">An error occurred, please refresh the page.</div>
+
+
   return (
     <div className="rounded-lg border px-4">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Title</TableHead>
-            <TableHead>Description</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Date added</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead>Date updated</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {deal.length === 0 ? (
+          {(deals ?? []).length === 0 ? (
             <TableRow>
               <TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground">
                 No deals found.
               </TableCell>
             </TableRow>
           ) : (
-            deal.map((item) => (
+            (deals ?? []).map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.title}</TableCell>
-                <TableCell>{item.description ?? "—"}</TableCell>
                 <TableCell>
-                  <span className={cn("text-xs font-medium px-2.5 py-1 rounded-md border w-[5vw] text-center", DealStatusStyles[item.status])}>
+                  <span className={cn("text-xs font-medium px-2.5 py-1 rounded-md border w-[5vw] text-center", [item.status])}>
                     {item.status}
                   </span>
                 </TableCell>
                 <TableCell>
-                  {item.due_date
-                    ? new Date(item.due_date).toLocaleDateString("en-US", {
+                  {item.created_at
+                    ? new Date(item.created_at).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
@@ -81,13 +52,22 @@ const DealTable = () => {
                     : "—"}
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center">
-                    <DealModal deal={item} />
-                    <DeleteDialog
-                      deleteTitle={`${item.title}`}
-                      onConfirm={() => console.log("Deleted", item.title)}
-                    />
-                  </div>
+                  {item.updated_at
+                    ? new Date(item.updated_at).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    : "—"}
+                </TableCell>
+                <TableCell className="text-right">
+                      <div className="inline-flex items-center rounded-md border divide-x overflow-hidden">
+                        <ButtonGroup>
+                            <DealModal deal={item} />
+                            <ButtonGroupSeparator/>
+                            <DeleteDialog deleteTitle={`${item.title}`} onConfirm={() => deleteDeal(item.id)} disabled={deleting}/>
+                        </ButtonGroup>
+                      </div>
                 </TableCell>
               </TableRow>
             ))
@@ -97,5 +77,4 @@ const DealTable = () => {
     </div>
   )
 }
-
 export default DealTable

@@ -1,19 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { ArrowLeft, Building2, Mail, Phone, User, Pencil, Trash2 } from 'lucide-react'
+import { ArrowLeft, Building2, Mail, Phone, User} from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { Button } from '../ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { ButtonGroup, ButtonGroupSeparator } from '../ui/button-group'
 import { ClientStatusStyles } from '../shared/StyleStatus'
-
-type DealStatus = 'New' | 'In Progress' | 'Won' | 'Lost'
-
-interface Deal {
-  id: string
-  title: string
-  status: DealStatus
-  created_at: string
-}
+import AddClientDealModal from './AddClientDealModal'
+import type { ClientDeal } from '@/interface/Interface'
+import { DeleteDialog } from '../shared/DeleteDialog'
 
 const client = {
   id: '1',
@@ -23,7 +16,7 @@ const client = {
   company: 'GL Solutions',
 }
 
-const deals: Deal[] = [
+const deals: ClientDeal[] = [
   { id: '1', title: 'Website Redesign', status: 'In Progress', created_at: '2026-01-15T00:00:00Z' },
   { id: '2', title: 'SEO Package', status: 'New', created_at: '2026-02-03T00:00:00Z' },
   { id: '3', title: 'Mobile App', status: 'Won', created_at: '2026-03-20T00:00:00Z' },
@@ -65,7 +58,7 @@ const ClientDetail = () => {
         <Card>      
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base font-semibold">Deals</CardTitle>
-          <Button size="sm">+ Add Deal</Button>
+          <AddClientDealModal/>
         </CardHeader>
         <CardContent>
           <Table>
@@ -103,21 +96,9 @@ const ClientDetail = () => {
                     <TableCell className="text-right">
                       <div className="inline-flex items-center rounded-md border divide-x overflow-hidden">
                         <ButtonGroup>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="rounded-none border-0 h-8 w-8"
-                              onClick={() => {}}>
-                              <Pencil size='icon' />
-                            </Button>
+                            <AddClientDealModal deal={deal} />
                             <ButtonGroupSeparator/>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="rounded-none border-0 h-8 w-8 text-destructive hover:text-destructive"
-                              onClick={() => {}}>
-                              <Trash2 size="icon" />
-                            </Button>
+                            <DeleteDialog deleteTitle={`${deal.title}`}  onConfirm={() => console.log("Deleted", deal.title)}/>
                         </ButtonGroup>
                       </div>
                     </TableCell>

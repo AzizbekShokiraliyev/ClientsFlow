@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,12 +12,14 @@ const ClientModal = ({ client }: ClientModalProps) => {
         <Dialog>
             <form>
                 <DialogTrigger asChild>
-                    {isEdit ? (<Button variant="secondary" size="lg"><Pencil/></Button>) : (<Button size='lg'><span><Plus/></span>Add client</Button>)}
+                    {isEdit ? 
+                    (<Button variant="outline" size="icon" className="rounded-none border-0 h-8 w-8"><Pencil/></Button>) : 
+                    (<Button size='lg'><span><Plus/></span>Add client</Button>)}
                 </DialogTrigger>
 
                 <DialogContent className="sm:max-w-sm">
                     <div className="text-center text-lg">
-                        <DialogHeader>{isEdit ? "Edit client" : "Add new client"}</DialogHeader>
+                        <DialogTitle>{isEdit ? "Edit client" : "Add new client"}</DialogTitle>
                     </div>
 
                     <FieldGroup>
