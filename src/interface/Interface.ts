@@ -23,17 +23,13 @@ export interface Deal {
   user_id: string
   client_id?: string
   title: string
-  status: DealStatus
+  status: ClientDealStatus
   created_at: string
   updated_at: string
 }
 
 export interface DealTableProps {
   deal: Deal[]
-}
-
-export interface DealModalProps {
-  deal?: Deal
 }
 
 export interface Task {
@@ -46,6 +42,10 @@ export interface Task {
   due_date: string | null
   created_at: string
   updated_at: string
+}
+
+export interface TaskModalProps {
+  task?: Task
 }
 
 export interface ClientDeal {

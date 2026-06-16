@@ -1,4 +1,4 @@
-import type { DealModalProps, DealStatus } from "@/interface/Interface"
+import type { DealStatus, TaskModalProps } from "@/interface/Interface"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Button } from "../ui/button"
 import { Bookmark, Pencil, Plus } from "lucide-react"
@@ -14,15 +14,16 @@ import {
   SelectValue,
 } from "../ui/select"
 import { useState } from "react"
-import { UseDealCreate, useDealUpdate } from "@/hooks/useDeal"
 import { supabase } from "@/lib/supabase"
+import { useCreateTask, useUpdateTask } from "@/hooks/useTask"
+import { useParams } from "react-router-dom"
 
-const DealModal = ({ deal }: DealModalProps) => {
-  const isEdit = !!deal
+const TaskModal = ({ task }: TaskModalProps) => {
+  const isEdit = !!task
   const [open, setOpen] = useState(false)
-
-  const { mutate: dealEdit, isPending: isUpdating } = useDealUpdate()
-  const { mutate: dealCreate, isPending: isCreating } = UseDealCreate()
+  const { dealId } = useParams()
+  const { mutate: taskEdit, isPending: isUpdating } = useUpdateTask()
+  const { mutate: taskCreate, isPending: isCreating } = useCreateTask()
 
   const isPending = isCreating || isUpdating
 
@@ -34,13 +35,13 @@ const DealModal = ({ deal }: DealModalProps) => {
     const status = formData.get("status") as DealStatus
     const date = formData.get("date") as string
 
-    if (!title.trim() || !status) return
+    if (!title.trim()) return
 
     try {
       if (isEdit) {
-        dealEdit(
+        taskEdit(
           {
-            id: deal.id,
+            id: task.id,
             title,
             status,
             created_at: date ? new Date(date).toISOString() : undefined,
@@ -59,11 +60,14 @@ const DealModal = ({ deal }: DealModalProps) => {
           return
         }
 
-        dealCreate(
+        taskCreate(
           {
             title,
             status,
             user_id: user.id,
+            deal_id: dealId!,
+            description: null,
+            due_date: date ? new Date(date).toISOString() : null,
           },
           {
             onSuccess: () => setOpen(false),
@@ -109,16 +113,14 @@ const DealModal = ({ deal }: DealModalProps) => {
               <Input
                 name="title"
                 placeholder="Enter deal name..."
-                defaultValue={deal?.title ?? ""}
+                defaultValue={task?.title ?? ""}
                 required
               />
             </Field>
 
-            {/* Status Select */}
             <Field>
               <Label>Status</Label>
-              {/* MUHIM: Select'ga name va defaultValue berildi */}
-              <Select name="status" defaultValue={deal?.status ?? "Todo"}>
+              <Select name="status" defaultValue={task?.status ?? "Todo"}>
                 <SelectTrigger className="w-full max-w-96">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
@@ -126,7 +128,7 @@ const DealModal = ({ deal }: DealModalProps) => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectItem value="Todo">Todo</SelectItem>
-                    <SelectItem value="InProgress">In progress</SelectItem>
+                    <SelectItem value="In Progress">In Progress</SelectItem>
                     <SelectItem value="Done">Done</SelectItem>
                   </SelectGroup>
                 </SelectContent>
@@ -141,8 +143,8 @@ const DealModal = ({ deal }: DealModalProps) => {
                   name="date"
                   type="date"
                   defaultValue={
-                    deal?.created_at
-                      ? deal.created_at.split("T")[0]
+                    task?.created_at
+                      ? task.created_at.split("T")[0]
                       : new Date().toISOString().split("T")[0]
                   }
                 />
@@ -166,4 +168,4 @@ const DealModal = ({ deal }: DealModalProps) => {
   )
 }
 
-export default DealModal
+export default TaskModal
