@@ -97,7 +97,6 @@ const DealModal = ({ deal }: DealModalProps) => {
         )}
       </DialogTrigger>
 
-      {/* MUHIM: Form elementini DialogContent'ning ICHIGA joylashtirdik */}
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit}>
           <div className="mb-4 text-center text-lg">
@@ -105,7 +104,6 @@ const DealModal = ({ deal }: DealModalProps) => {
           </div>
 
           <FieldGroup>
-            {/* Title Input */}
             <Field>
               <Label>Title</Label>
               <Input

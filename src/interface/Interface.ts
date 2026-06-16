@@ -6,10 +6,9 @@ export type ClientDealStatus = "New" | "In Progress" | "Won" | "Lost";
 export interface Client {
   id: string
   user_id: string
-  fullName?: string
+  name: string
   email: string | null
   phone: string | null
-  phoneNumber?: string | null
   company: string | null
   created_at: string
   updated_at: string
