@@ -17,6 +17,7 @@ import { useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { useCreateTask, useUpdateTask } from "@/hooks/useTask"
 import { useParams } from "react-router-dom"
+import { toast } from "sonner"
 
 const TaskModal = ({ task }: TaskModalProps) => {
   const isEdit = !!task
@@ -56,7 +57,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
         } = await supabase.auth.getUser()
 
         if (!user) {
-          alert("Iltimos, avval tizimga kiring!")
+          toast("Iltimos, avval tizimga kiring!")
           return
         }
 

@@ -20,6 +20,7 @@ import { useState } from "react"
 import { UseDealCreate, useDealUpdate } from "@/hooks/useDeal"
 import { supabase } from "@/lib/supabase"
 import { useParams } from "react-router-dom"
+import { toast } from "sonner"
 
 const AddClientDealModal = ({ deal }: DealClientModalProps) => {
   const isEdit = !!deal
@@ -58,7 +59,7 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
         } = await supabase.auth.getUser()
 
         if (!user) {
-          alert("Iltimos, avval tizimga kiring!")
+          toast("Iltimos, avval tizimga kiring!")
           return
         }
 
@@ -98,7 +99,9 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
 
         <DialogContent className="sm:max-w-sm">
           <form onSubmit={handleSubmit}>
-            <DialogTitle>{isEdit ? "Edit deal" : "Add Deal"}</DialogTitle>
+            <div className="pb-3 text-center text-lg">
+              <DialogTitle>{isEdit ? "Edit deal" : "Add Deal"}</DialogTitle>
+            </div>
 
             <FieldGroup>
               <Field>

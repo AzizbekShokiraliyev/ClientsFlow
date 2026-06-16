@@ -1,6 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { StatCardProps } from "@/interface/Interface";
-
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { StatCardProps } from "@/interface/Interface"
 
 export function StatCard({ title, value, icon }: StatCardProps) {
   return (
@@ -12,8 +11,8 @@ export function StatCard({ title, value, icon }: StatCardProps) {
         <div className="text-muted-foreground">{icon}</div>
       </CardHeader>
       <CardContent>
-        <div className="text-3xl font-bold">{value}</div>
+        <div className="px-4 text-3xl font-bold">{value}</div>
       </CardContent>
     </Card>
-  );
+  )
 }

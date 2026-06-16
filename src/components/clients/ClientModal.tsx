@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabase"
 import { Bookmark, Pencil, Plus } from "lucide-react"
 import type React from "react"
 import { useState } from "react"
+import { toast } from "sonner"
 
 const ClientModal = ({ client }: ClientModalProps) => {
   const isEdit = !!client
@@ -56,7 +57,7 @@ const ClientModal = ({ client }: ClientModalProps) => {
         } = await supabase.auth.getUser()
 
         if (!user) {
-          alert("Iltimos, avval tizimga kiring!")
+          toast("Iltimos, avval tizimga kiring!")
           return
         }
 
