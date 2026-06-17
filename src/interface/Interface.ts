@@ -59,6 +59,10 @@ export interface DealClientModalProps {
   deal?: ClientDeal
 }
 
+export interface ClientModalProps {
+  client?: Client
+}
+
 export interface KanbanDeal {
   id: string
   title: string
@@ -70,10 +74,6 @@ export interface StatCardProps {
   title: string
   value: number
   icon: ReactNode
-}
-
-export interface ClientModalProps {
-  client?: Client
 }
 
 export interface SearchProps {

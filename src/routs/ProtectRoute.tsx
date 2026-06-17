@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       }
       setLoading(false)
     })
-  }, [])
+  }, [navigate])
 
   if (loading) return <div>Loading...</div>
 
