@@ -91,7 +91,6 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
               size="icon"
               className="h-8 w-8 rounded-none border-0"
             >
-              {" "}
               <Pencil />
             </Button>
           ) : (

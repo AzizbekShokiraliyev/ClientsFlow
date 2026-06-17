@@ -1,7 +1,7 @@
 import Search from "../shared/Search"
 import ClientsTable from "./ClientsTable"
 import ClientModal from "./ClientModal"
-import ExportCsvButton from "./ExportCsvButton"
+import ExportCsvButton from "../shared/ExportCsvButton"
 import { useState } from "react"
 import { useClient } from "@/hooks/useClient"
 

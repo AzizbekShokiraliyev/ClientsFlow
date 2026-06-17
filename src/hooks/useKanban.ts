@@ -1,4 +1,3 @@
-// hooks/useKanban.ts
 import { supabase } from "@/lib/supabase"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { ClientDealStatus } from "@/interface/Interface"

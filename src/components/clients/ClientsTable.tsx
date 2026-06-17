@@ -1,4 +1,3 @@
-// ClientsTable.tsx
 import {
   Table,
   TableBody,

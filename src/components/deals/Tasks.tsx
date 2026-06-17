@@ -3,7 +3,7 @@ import TaskTable from "./TaskTable"
 import { ArrowLeft } from "lucide-react"
 import TaskModal from "./TaskModal"
 import { useClient } from "@/hooks/useClient"
-import ExportCsvButton from "../clients/ExportCsvButton"
+import ExportCsvButton from "../shared/ExportCsvButton"
 import { UseDeal } from "@/hooks/useDeal"
 import { useTask } from "@/hooks/useTask"
 

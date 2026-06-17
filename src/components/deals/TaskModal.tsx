@@ -70,7 +70,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
             status,
             user_id: user.id,
             deal_id: dealId!,
-            description: description || null, // ✅ | emas ||
+            description: description || null,
             due_date: date ? new Date(date).toISOString() : null,
           },
           {
@@ -98,7 +98,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
         ) : (
           <Button size="lg">
             <Plus />
-            Add task {/* ✅ "Add client" emas */}
+            Add task
           </Button>
         )}
       </DialogTrigger>
@@ -149,12 +149,11 @@ const TaskModal = ({ task }: TaskModalProps) => {
             <div className="mt-4 flex items-end gap-2">
               <div className="grid w-full gap-1.5">
                 <Label htmlFor="date">Due Date</Label>{" "}
-                {/* ✅ "Today's Date" emas */}
                 <Input
                   name="date"
                   type="date"
                   defaultValue={
-                    task?.due_date // ✅ created_at emas due_date
+                    task?.due_date
                       ? task.due_date.split("T")[0]
                       : new Date().toISOString().split("T")[0]
                   }
