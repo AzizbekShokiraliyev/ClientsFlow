@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "../ui/card"
+} from "../../ui/card"
 import {
   ArrowLeft,
   Building2,
@@ -21,17 +21,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table"
-import { ButtonGroup, ButtonGroupSeparator } from "../ui/button-group"
+} from "../../ui/table"
+import { ButtonGroup, ButtonGroupSeparator } from "../../ui/button-group"
 import AddClientDealModal from "./AddClientDealModal"
-import { DeleteDialog } from "../shared/DeleteDialog"
+import { DeleteDialog } from "../../shared/DeleteDialog"
 import { UseDeal, useDealDelate } from "@/hooks/useDeal"
 import { useClient } from "@/hooks/useClient"
 
 const ClientDetail = () => {
   const navigate = useNavigate()
   const { clientId } = useParams()
-  const { isLoading, isError, data: deals } = UseDeal()
+  const { isLoading, isError, data: deals } = UseDeal(clientId)
   const { mutate: dealDelete, isPending: deleting } = useDealDelate()
   const { data: client } = useClient()
 

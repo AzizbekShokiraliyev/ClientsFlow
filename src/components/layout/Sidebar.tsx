@@ -14,8 +14,10 @@ import {
   LogOut,
   ChevronRight,
 } from "lucide-react"
-import { Link, NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { Button } from "../ui/button"
+import { supabase } from "@/lib/supabase"
+import { useQueryClient } from "@tanstack/react-query"
 
 const navItems = [
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
@@ -24,6 +26,15 @@ const navItems = [
 ]
 
 const Sidebar = () => {
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    queryClient.clear()
+    navigate("/login")
+  }
+
   return (
     <MainSidebar className="w-64 border-none">
       <SidebarHeader className="px-5 py-6">
@@ -86,21 +97,21 @@ const Sidebar = () => {
         </SidebarMenu>
       </SidebarContent>
 
-      <Link to="/">
-        <SidebarFooter className="px-3 py-4">
-          <div className="mx-1 rounded-xl border border-border/50 bg-muted/30 p-3">
-            <div className="flex items-center gap-12">
-              <p className="truncate text-sm leading-none font-semibold">
-                Tizimdan chiqish
-              </p>
-
-              <Button>
-                <LogOut className="h-3.5 w-3.5" />
-              </Button>
-            </div>
+      <SidebarFooter className="px-3 py-4">
+        <div
+          className="mx-1 cursor-pointer rounded-xl border border-border/50 bg-muted/30 p-3"
+          onClick={handleLogout}
+        >
+          <div className="flex items-center gap-12">
+            <p className="truncate text-sm leading-none font-semibold">
+              Tizimdan chiqish
+            </p>
+            <Button size="icon">
+              <LogOut />
+            </Button>
           </div>
-        </SidebarFooter>
-      </Link>
+        </div>
+      </SidebarFooter>
     </MainSidebar>
   )
 }

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export type DealStatus = "Todo" | "In Progress" | "Done";
+export type TaskStatus = "Todo" | "In Progress" | "Done";
 export type ClientDealStatus = "New" | "In Progress" | "Won" | "Lost";
 
 export interface Client {
@@ -38,7 +38,7 @@ export interface Task {
   deal_id: string
   title: string
   description: string | null
-  status: DealStatus
+  status: TaskStatus
   due_date: string | null
   created_at: string
   updated_at: string
@@ -90,4 +90,11 @@ export interface KanbanCardProps {
 export interface KanbanColumnProps {
   status: string
   deals: KanbanDeal[]
+}
+
+export interface ExportCsvButtonProps {
+  data: Record<string, unknown>[]
+  filename?: string
+  headers: string[]
+  keys: string[]
 }

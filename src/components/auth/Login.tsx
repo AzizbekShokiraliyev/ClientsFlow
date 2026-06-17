@@ -1,8 +1,19 @@
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
@@ -10,10 +21,14 @@ import { supabase } from "@/lib/supabase"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-  
+
 const loginScheme = z.object({
-  email: z.string().email({ message: "Iltimos, to'g'ri email manzilini kiriting" }),
-  password: z.string().min(8, { message: "Parol kamida 8 ta belgidan iborat bo'lishi kerak" }),
+  email: z
+    .string()
+    .email({ message: "Iltimos, to'g'ri email manzilini kiriting" }),
+  password: z
+    .string()
+    .min(8, { message: "Parol kamida 8 ta belgidan iborat bo'lishi kerak" }),
 })
 
 type LoginValues = z.infer<typeof loginScheme>
@@ -24,9 +39,13 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginValues>({
     resolver: zodResolver(loginScheme),
-    defaultValues: { email: "", password: "" }
+    defaultValues: { email: "", password: "" },
   })
 
   const onSubmit = async (data: LoginValues) => {
@@ -51,14 +70,14 @@ const Login = () => {
     <div className="flex min-h-screen items-center justify-center">
       <Card className="w-full sm:max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Login</CardTitle>
+          <CardTitle className="text-center text-2xl">Login</CardTitle>
           <CardDescription className="text-center">
             Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
 
         <CardContent>
-          <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <form className="grid gap-4 px-4" onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field>
                 <FieldLabel>Email</FieldLabel>
@@ -68,7 +87,9 @@ const Login = () => {
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-destructive text-xs mt-1">{errors.email.message}</p>
+                  <p className="mt-1 text-xs text-destructive">
+                    {errors.email.message}
+                  </p>
                 )}
               </Field>
             </FieldGroup>
@@ -94,14 +115,14 @@ const Login = () => {
                   </InputGroupAddon>
                 </InputGroup>
                 {errors.password && (
-                  <p className="text-destructive text-xs mt-1">{errors.password.message}</p>
+                  <p className="mt-1 text-xs text-destructive">
+                    {errors.password.message}
+                  </p>
                 )}
               </Field>
             </FieldGroup>
 
-            {error && (
-              <p className="text-sm text-red-500">{error}</p>
-            )}
+            {error && <p className="text-sm text-red-500">{error}</p>}
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Loading..." : "Login"}
@@ -112,7 +133,7 @@ const Login = () => {
         <CardFooter className="justify-center text-sm">
           <p className="text-muted-foreground">
             Don't have an account?{" "}
-            <Link to="/register" className="text-primary underline font-medium">
+            <Link to="/register" className="font-medium text-primary underline">
               Register
             </Link>
           </p>

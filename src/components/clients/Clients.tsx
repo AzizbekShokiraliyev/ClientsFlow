@@ -1,12 +1,13 @@
-// Clients.tsx
 import Search from "../shared/Search"
 import ClientsTable from "./ClientsTable"
 import ClientModal from "./ClientModal"
 import ExportCsvButton from "./ExportCsvButton"
 import { useState } from "react"
+import { useClient } from "@/hooks/useClient"
 
 const Clients = () => {
   const [searchQuery, setSearchQuery] = useState("")
+  const { data: client } = useClient()
 
   return (
     <div className="space-y-4">
@@ -19,8 +20,13 @@ const Clients = () => {
           />
         </div>
         <div className="flex gap-3">
+          <ExportCsvButton
+            data={client ?? []}
+            filename="clients"
+            headers={["Name", "Email", "Phone", "Company", "Date Added"]}
+            keys={["name", "email", "phone", "company", "created_at"]}
+          />
           <ClientModal />
-          <ExportCsvButton />
         </div>
       </div>
       <ClientsTable searchQuery={searchQuery} />

@@ -1,4 +1,4 @@
-import type { DealStatus, TaskModalProps } from "@/interface/Interface"
+import type { TaskStatus, TaskModalProps } from "@/interface/Interface"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Button } from "../ui/button"
 import { Bookmark, Pencil, Plus } from "lucide-react"
@@ -18,6 +18,7 @@ import { supabase } from "@/lib/supabase"
 import { useCreateTask, useUpdateTask } from "@/hooks/useTask"
 import { useParams } from "react-router-dom"
 import { toast } from "sonner"
+import { Textarea } from "../ui/textarea"
 
 const TaskModal = ({ task }: TaskModalProps) => {
   const isEdit = !!task
@@ -33,7 +34,8 @@ const TaskModal = ({ task }: TaskModalProps) => {
 
     const formData = new FormData(e.currentTarget)
     const title = formData.get("title") as string
-    const status = formData.get("status") as DealStatus
+    const description = formData.get("description") as string
+    const status = formData.get("status") as TaskStatus
     const date = formData.get("date") as string
 
     if (!title.trim()) return
@@ -44,8 +46,9 @@ const TaskModal = ({ task }: TaskModalProps) => {
           {
             id: task.id,
             title,
+            description: description || null,
             status,
-            created_at: date ? new Date(date).toISOString() : undefined,
+            due_date: date ? new Date(date).toISOString() : undefined,
           },
           {
             onSuccess: () => setOpen(false),
@@ -67,7 +70,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
             status,
             user_id: user.id,
             deal_id: dealId!,
-            description: null,
+            description: description || null, // ✅ | emas ||
             due_date: date ? new Date(date).toISOString() : null,
           },
           {
@@ -94,10 +97,8 @@ const TaskModal = ({ task }: TaskModalProps) => {
           </Button>
         ) : (
           <Button size="lg">
-            <span>
-              <Plus />
-            </span>
-            Add client
+            <Plus />
+            Add task {/* ✅ "Add client" emas */}
           </Button>
         )}
       </DialogTrigger>
@@ -105,7 +106,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit}>
           <div className="mb-4 text-center text-lg">
-            <DialogTitle>{isEdit ? "Edit deal" : "Add new deal"}</DialogTitle>
+            <DialogTitle>{isEdit ? "Edit task" : "Add new task"} </DialogTitle>
           </div>
 
           <FieldGroup>
@@ -113,9 +114,19 @@ const TaskModal = ({ task }: TaskModalProps) => {
               <Label>Title</Label>
               <Input
                 name="title"
-                placeholder="Enter deal name..."
+                placeholder="Enter task name..."
                 defaultValue={task?.title ?? ""}
                 required
+              />
+            </Field>
+
+            <Field>
+              <Label>Description</Label>
+              <Textarea
+                name="description"
+                placeholder="Enter description..."
+                defaultValue={task?.description ?? ""}
+                rows={3}
               />
             </Field>
 
@@ -125,7 +136,6 @@ const TaskModal = ({ task }: TaskModalProps) => {
                 <SelectTrigger className="w-full max-w-96">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
-
                 <SelectContent>
                   <SelectGroup>
                     <SelectItem value="Todo">Todo</SelectItem>
@@ -136,16 +146,16 @@ const TaskModal = ({ task }: TaskModalProps) => {
               </Select>
             </Field>
 
-            {/* Date Input va Submit tugmasi */}
             <div className="mt-4 flex items-end gap-2">
               <div className="grid w-full gap-1.5">
-                <Label htmlFor="date">Today's Date</Label>
+                <Label htmlFor="date">Due Date</Label>{" "}
+                {/* ✅ "Today's Date" emas */}
                 <Input
                   name="date"
                   type="date"
                   defaultValue={
-                    task?.created_at
-                      ? task.created_at.split("T")[0]
+                    task?.due_date // ✅ created_at emas due_date
+                      ? task.due_date.split("T")[0]
                       : new Date().toISOString().split("T")[0]
                   }
                 />

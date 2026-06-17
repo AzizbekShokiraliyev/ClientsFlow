@@ -1,9 +1,14 @@
 import { Bookmark, Pencil, Plus } from "lucide-react"
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog"
-import { Field, FieldGroup } from "../ui/field"
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "../../ui/dialog"
+import { Field, FieldGroup } from "../../ui/field"
+import { Label } from "../../ui/label"
+import { Input } from "../../ui/input"
+import { Button } from "../../ui/button"
 import {
   Select,
   SelectContent,
@@ -11,7 +16,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select"
+} from "../../ui/select"
 import type {
   ClientDealStatus,
   DealClientModalProps,

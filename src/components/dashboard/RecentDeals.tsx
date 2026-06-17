@@ -1,10 +1,10 @@
 // components/dashboard/RecentDeals.tsx
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { UseDeal } from "@/hooks/useDeal"
+import { UseAllDeals } from "@/hooks/useDeal"
 
 export function RecentDeals() {
-  const { data: deals } = UseDeal()
+  const { data: deals } = UseAllDeals()
   return (
     <Card>
       <CardHeader>

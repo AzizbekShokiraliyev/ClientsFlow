@@ -42,9 +42,9 @@ const ClientModal = ({ client }: ClientModalProps) => {
           {
             id: client.id,
             name,
-            email: email || null,
-            phone: phone || null,
-            company: company || null,
+            email,
+            phone,
+            company,
             created_at: date ? new Date(date).toISOString() : undefined,
           },
           {
@@ -64,9 +64,9 @@ const ClientModal = ({ client }: ClientModalProps) => {
         createClient(
           {
             name,
-            email: email || null,
-            phone: phone || null,
-            company: company || null,
+            email,
+            phone,
+            company,
             user_id: user.id,
           },
           {
