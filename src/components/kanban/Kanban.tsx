@@ -17,13 +17,13 @@ const Kanban = () => {
     const overId = over.id as ClientDealStatus
 
     if (STATUSES.includes(overId) && activeId !== overId) {
-      updateStatus({ id: activeId, status: overId }) // ✅ backend ga yuboradi
+      updateStatus({ id: activeId, status: overId })
     }
   }
 
   if (isLoading) return <div className="p-10 text-center">Loading...</div>
   if (isError)
-    return <div className="p-10 text-center text-red-500">Error occurred.</div>
+    return <div className="p-10 text-center text-red-500">Error occurred</div>
 
   return (
     <div className="p-6">

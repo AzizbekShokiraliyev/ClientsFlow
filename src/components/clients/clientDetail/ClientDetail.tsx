@@ -27,6 +27,9 @@ import AddClientDealModal from "./AddClientDealModal"
 import { DeleteDialog } from "../../shared/DeleteDialog"
 import { UseDeal, useDealDelate } from "@/hooks/useDeal"
 import { useClient } from "@/hooks/useClient"
+import { cn } from "@/lib/utils"
+import type { ClientDealStatus } from "@/interface/Interface"
+import { ClientStatusStyles } from "@/components/shared/StyleStatus"
 
 const ClientDetail = () => {
   const navigate = useNavigate()
@@ -174,7 +177,10 @@ const ClientDetail = () => {
 
                       <TableCell>
                         <span
-                          className={`inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-center text-xs font-medium ${[deal.status]}`}
+                          className={cn(
+                            "inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-center text-xs font-medium",
+                            ClientStatusStyles[deal.status as ClientDealStatus]
+                          )}
                         >
                           {deal.status}
                         </span>

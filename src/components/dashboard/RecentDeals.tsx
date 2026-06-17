@@ -2,6 +2,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { UseAllDeals } from "@/hooks/useDeal"
+import { ClientStatusStyles } from "../shared/StyleStatus"
+import type { ClientDealStatus } from "@/interface/Interface"
 
 export function RecentDeals() {
   const { data: deals } = UseAllDeals()
@@ -31,7 +33,7 @@ export function RecentDeals() {
             <span
               className={cn(
                 "w-[5vw] rounded-md border px-2.5 py-1 text-center text-xs font-medium",
-                [deal.status]
+                ClientStatusStyles[deal.status as ClientDealStatus]
               )}
             >
               {deal.status}

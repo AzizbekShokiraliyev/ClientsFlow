@@ -13,6 +13,8 @@ import { ButtonGroup, ButtonGroupSeparator } from "../ui/button-group"
 import { useDeleteTask, useTask } from "@/hooks/useTask"
 import { Card } from "../ui/card"
 import { useParams } from "react-router-dom"
+import { DealStatusStyles } from "../shared/StyleStatus"
+import type { TaskStatus } from "@/interface/Interface"
 
 const TaskTable = () => {
   const { dealId } = useParams()
@@ -57,7 +59,7 @@ const TaskTable = () => {
                   <span
                     className={cn(
                       "rounded-md border px-2.5 py-1 text-center text-xs font-medium",
-                      [item.status]
+                      DealStatusStyles[item.status as TaskStatus]
                     )}
                   >
                     {item.status}
