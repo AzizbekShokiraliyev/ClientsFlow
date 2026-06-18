@@ -5,6 +5,7 @@ import { Bookmark, Pencil, Plus } from "lucide-react"
 import { Field, FieldGroup } from "../ui/field"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
+import { Textarea } from "../ui/textarea"
 import {
   Select,
   SelectContent,
@@ -18,7 +19,11 @@ import { supabase } from "@/lib/supabase"
 import { useCreateTask, useUpdateTask } from "@/hooks/useTask"
 import { useParams } from "react-router-dom"
 import { toast } from "sonner"
-import { Textarea } from "../ui/textarea"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { taskSchema, type TaskValues } from "@/lib/validation"
+import { useEffect } from "react"
+
 
 const TaskModal = ({ task }: TaskModalProps) => {
   const isEdit = !!task
@@ -29,16 +34,35 @@ const TaskModal = ({ task }: TaskModalProps) => {
 
   const isPending = isCreating || isUpdating
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<TaskValues>({
+    resolver: zodResolver(taskSchema),
+    values: {
+      title: task?.title ?? "",
+      description: task?.description ?? "",
+      status: task?.status ?? "Todo",
+      date: task?.due_date
+        ? task.due_date.split("T")[0]
+        : new Date().toISOString().split("T")[0],
+    },
+  })
 
-    const formData = new FormData(e.currentTarget)
-    const title = formData.get("title") as string
-    const description = formData.get("description") as string
-    const status = formData.get("status") as TaskStatus
-    const date = formData.get("date") as string
+  useEffect(() => {
+    if (!open && !isEdit) {
+      reset()
+    }
+  }, [open, isEdit, reset])
 
-    if (!title.trim()) return
+  const onSubmit = async (data: TaskValues) => {
+    const title = data.title
+    const description = data.description
+    const status = data.status as TaskStatus
+    const date = data.date
 
     try {
       if (isEdit) {
@@ -60,7 +84,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
         } = await supabase.auth.getUser()
 
         if (!user) {
-          toast("Iltimos, avval tizimga kiring!")
+          toast.error("Iltimos, avval tizimga kiring!")
           return
         }
 
@@ -74,7 +98,10 @@ const TaskModal = ({ task }: TaskModalProps) => {
             due_date: date ? new Date(date).toISOString() : null,
           },
           {
-            onSuccess: () => setOpen(false),
+            onSuccess: () => {
+              setOpen(false)
+              reset()
+            },
             onError: (err) => console.error("Xatolik:", err),
           }
         )
@@ -104,7 +131,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-sm">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4 text-center text-lg">
             <DialogTitle>{isEdit ? "Edit task" : "Add new task"} </DialogTitle>
           </div>
@@ -113,51 +140,69 @@ const TaskModal = ({ task }: TaskModalProps) => {
             <Field>
               <Label>Title</Label>
               <Input
-                name="title"
                 placeholder="Enter task name..."
-                defaultValue={task?.title ?? ""}
-                required
+                {...register("title")}
               />
+              {errors.title && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.title.message}
+                </p>
+              )}
             </Field>
 
             <Field>
               <Label>Description</Label>
               <Textarea
-                name="description"
                 placeholder="Enter description..."
-                defaultValue={task?.description ?? ""}
                 rows={3}
+                {...register("description")}
               />
+              {errors.description && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.description.message}
+                </p>
+              )}
             </Field>
 
             <Field>
               <Label>Status</Label>
-              <Select name="status" defaultValue={task?.status ?? "Todo"}>
-                <SelectTrigger className="w-full max-w-96">
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="Todo">Todo</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Done">Done</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <Controller
+                control={control}
+                name="status"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-full max-w-96">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="Todo">Todo</SelectItem>
+                        <SelectItem value="In Progress">In Progress</SelectItem>
+                        <SelectItem value="Done">Done</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.status && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.status.message}
+                </p>
+              )}
             </Field>
 
             <div className="mt-4 flex items-end gap-2">
               <div className="grid w-full gap-1.5">
                 <Label htmlFor="date">Due Date</Label>{" "}
                 <Input
-                  name="date"
                   type="date"
-                  defaultValue={
-                    task?.due_date
-                      ? task.due_date.split("T")[0]
-                      : new Date().toISOString().split("T")[0]
-                  }
+                  {...register("date")}
                 />
+                {errors.date && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.date.message}
+                  </p>
+                )}
               </div>
               <Button type="submit" disabled={isPending}>
                 {isEdit ? (

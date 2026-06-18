@@ -25,20 +25,18 @@ import {
 import { ButtonGroup, ButtonGroupSeparator } from "../../ui/button-group"
 import AddClientDealModal from "./AddClientDealModal"
 import { DeleteDialog } from "../../shared/DeleteDialog"
-import { UseDeal, useDealDelate } from "@/hooks/useDeal"
-import { useClient } from "@/hooks/useClient"
+import { useDealById, useDealDelete } from "@/hooks/useDeal"
 import { cn } from "@/lib/utils"
 import type { ClientDealStatus } from "@/interface/Interface"
 import { ClientStatusStyles } from "@/components/shared/StyleStatus"
+import { useClientById } from "@/hooks/useClient"
 
 const ClientDetail = () => {
   const navigate = useNavigate()
   const { clientId } = useParams()
-  const { isLoading, isError, data: deals } = UseDeal(clientId)
-  const { mutate: dealDelete, isPending: deleting } = useDealDelate()
-  const { data: client } = useClient()
-
-  const clients = client?.find((c) => c.id === clientId)
+  const { isLoading, isError, data: deals } = useDealById(clientId)
+  const { mutate: dealDelete, isPending: deleting } = useDealDelete()
+  const { data: client } = useClientById(clientId)
 
   if (isLoading) return <div className="p-10 text-center">Loading deals...</div>
   if (isError)
@@ -69,7 +67,7 @@ const ClientDetail = () => {
               </div>
               <div>
                 <h2 className="text-xl font-bold tracking-tight text-foreground">
-                  {clients?.name}
+                  {client?.name}
                 </h2>
                 <p className="text-sm text-muted-foreground">
                   Client Profile & Contact Information
@@ -88,7 +86,7 @@ const ClientDetail = () => {
                   Email Address
                 </p>
                 <p className="truncate text-sm font-medium text-foreground">
-                  {clients?.email}
+                  {client?.email}
                 </p>
               </div>
             </div>
@@ -102,7 +100,7 @@ const ClientDetail = () => {
                   Phone Number
                 </p>
                 <p className="truncate text-sm font-medium text-foreground">
-                  {clients?.phone}
+                  {client?.phone}
                 </p>
               </div>
             </div>
@@ -116,7 +114,7 @@ const ClientDetail = () => {
                   Company
                 </p>
                 <p className="truncate text-sm font-medium text-foreground">
-                  {clients?.company}
+                  {client?.company}
                 </p>
               </div>
             </div>

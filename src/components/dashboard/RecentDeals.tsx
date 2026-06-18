@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { UseAllDeals } from "@/hooks/useDeal"
+import { useAllDeals } from "@/hooks/useDeal"
 import { ClientStatusStyles } from "../shared/StyleStatus"
 import type { ClientDealStatus } from "@/interface/Interface"
 
 export function RecentDeals() {
-  const { data: deals } = UseAllDeals()
+  const { data: deals } = useAllDeals()
   return (
     <Card>
       <CardHeader>

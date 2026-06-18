@@ -3,11 +3,11 @@ import { StatCard } from "@/components/dashboard/StatCard"
 import { RecentDeals } from "@/components/dashboard/RecentDeals"
 import { useClient } from "@/hooks/useClient"
 import { AllTask } from "@/hooks/useTask"
-import { UseAllDeals } from "@/hooks/useDeal"
+import { useAllDeals } from "@/hooks/useDeal"
 
 export default function Dashboard() {
   const { data: clients } = useClient()
-  const { data: deals } = UseAllDeals()
+  const { data: deals } = useAllDeals()
   const { data: tasks } = AllTask()
 
   const statCardInfo = [

@@ -2,7 +2,25 @@ import type { Deal } from "@/interface/Interface"
 import { supabase } from "@/lib/supabase"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-export const UseDeal = (clientId?: string) => {
+
+export const useAllDeals = () => {
+    return useQuery({
+        queryKey: ["deals"],
+        queryFn: async () => {
+            const {data, error} = await supabase
+            .from("deals")
+            .select("*")
+            .order("created_at", { ascending: false })
+            .limit(7)
+
+            if (error) throw error
+            return data
+        },
+    })
+}
+
+
+export const useDealById = (clientId?: string) => {
     return useQuery({
         queryKey: ["deals", clientId],
         queryFn: async () => {
@@ -19,7 +37,7 @@ export const UseDeal = (clientId?: string) => {
     })
 }
 
-export const UseDealCreate = () => {
+export const useDealCreate = () => {
     const queryClient = useQueryClient()
     
     return useMutation({
@@ -48,6 +66,7 @@ export const useDealUpdate = () => {
             .from("deals")
             .update(updates)
             .eq("id", id)
+            .select()
             .single()
 
             if (error) throw error
@@ -57,7 +76,7 @@ export const useDealUpdate = () => {
     })
 }
 
-export const useDealDelate = () => {
+export const useDealDelete = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
@@ -76,18 +95,3 @@ export const useDealDelate = () => {
 }
 
 
-export const UseAllDeals = () => {
-    return useQuery({
-        queryKey: ["deals"],
-        queryFn: async () => {
-            const {data, error} = await supabase
-            .from("deals")
-            .select("*")
-            .order("created_at", { ascending: false })
-            .limit(7)
-
-            if (error) throw error
-            return data
-        },
-    })
-}

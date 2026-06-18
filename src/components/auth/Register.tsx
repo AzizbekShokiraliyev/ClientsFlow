@@ -1,4 +1,3 @@
-// src/pages/Register.tsx
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,22 +18,9 @@ import { supabase } from "@/lib/supabase"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import * as z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-
-const registerScheme = z.object({
-  fullName: z
-    .string()
-    .min(2, { message: "Ism kamida 2 ta belgidan iborat bo'lishi kerak" }),
-  email: z
-    .string()
-    .email({ message: "Iltimos, to'g'ri email manzilini kiriting" }),
-  password: z
-    .string()
-    .min(8, { message: "Parol kamida 8 ta belgidan iborat bo'lishi kerak" }),
-})
-type RegisterValues = z.infer<typeof registerScheme>
+import { registerSchema, type RegisterValues } from "@/lib/validation"
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -47,7 +33,7 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterValues>({
-    resolver: zodResolver(registerScheme),
+    resolver: zodResolver(registerSchema),
     defaultValues: { fullName: "", email: "", password: "" },
   })
 
@@ -66,7 +52,7 @@ const Register = () => {
     if (error) {
       setError(error.message)
     } else {
-      navigate("/dashboart")
+      navigate("/dashboard")
     }
 
     setLoading(false)

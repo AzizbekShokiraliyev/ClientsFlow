@@ -18,20 +18,9 @@ import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { supabase } from "@/lib/supabase"
-import * as z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-
-const loginScheme = z.object({
-  email: z
-    .string()
-    .email({ message: "Iltimos, to'g'ri email manzilini kiriting" }),
-  password: z
-    .string()
-    .min(8, { message: "Parol kamida 8 ta belgidan iborat bo'lishi kerak" }),
-})
-
-type LoginValues = z.infer<typeof loginScheme>
+import { loginSchema, type LoginValues } from "@/lib/validation"
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -44,7 +33,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginValues>({
-    resolver: zodResolver(loginScheme),
+    resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   })
 

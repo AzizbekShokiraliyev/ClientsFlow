@@ -46,6 +46,7 @@ export const useClientUpdate = () => {
             .from("clients")
             .update(updates)
             .eq("id", id)
+            .select()
             .single()
 
             if (error) throw error
@@ -70,5 +71,22 @@ export const useClientDelete = () => {
             return data
         },
         onSuccess: () => queryClient.invalidateQueries({queryKey: ["clients"]})
+    })
+}
+
+export const useClientById = (clientId?: string) => {
+    return useQuery({
+        queryKey: ["client", clientId],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from("clients")
+                .select("*")
+                .eq("id", clientId)
+                .single()
+
+            if (error) throw error
+            return data
+        },
+        enabled: !!clientId
     })
 }

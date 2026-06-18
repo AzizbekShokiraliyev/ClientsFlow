@@ -1,9 +1,9 @@
 import Search from "../shared/Search"
 import ClientsTable from "./ClientsTable"
 import ClientModal from "./ClientModal"
-import ExportCsvButton from "../shared/ExportCsvButton"
 import { useState } from "react"
 import { useClient } from "@/hooks/useClient"
+import ExportCsvButton from "../shared/ExportCsvButton"
 
 const Clients = () => {
   const [searchQuery, setSearchQuery] = useState("")

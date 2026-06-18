@@ -18,33 +18,50 @@ import {
   SelectValue,
 } from "../../ui/select"
 import type {
-  ClientDealStatus,
   DealClientModalProps,
 } from "@/interface/Interface"
-import { useState } from "react"
-import { UseDealCreate, useDealUpdate } from "@/hooks/useDeal"
+import { useState, useEffect } from "react"
+import { useDealCreate, useDealUpdate } from "@/hooks/useDeal"
 import { supabase } from "@/lib/supabase"
 import { useParams } from "react-router-dom"
 import { toast } from "sonner"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { dealSchema, type DealValues } from "@/lib/validation"
 
 const AddClientDealModal = ({ deal }: DealClientModalProps) => {
   const isEdit = !!deal
   const [open, setOpen] = useState(false)
   const { mutate: editDeal, isPending: Updating } = useDealUpdate()
-  const { mutate: createDeal, isPending: Creating } = UseDealCreate()
+  const { mutate: createDeal, isPending: Creating } = useDealCreate()
   const { clientId } = useParams()
   const isPending = Creating || Updating
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<DealValues>({
+    resolver: zodResolver(dealSchema),
+    values: {
+      title: deal?.title ?? "",
+      status: deal?.status ?? "New",
+      date: deal?.created_at ? deal.created_at.split("T")[0] : "",
+    },
+  })
 
-    const formData = new FormData(e.currentTarget)
-    const title = formData.get("title") as string
-    const status = formData.get("status") as ClientDealStatus
-    const date = formData.get("date") as string
+  useEffect(() => {
+    if (!open && !isEdit) {
+      reset()
+    }
+  }, [open, isEdit, reset])
 
-    if (!title.trim()) return
-
+  const onSubmit = async (data: DealValues) => {
+    const title = data.title
+    const status = data.status
+    const date = data.date
     try {
       if (isEdit) {
         editDeal(
@@ -64,14 +81,17 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
         } = await supabase.auth.getUser()
 
         if (!user) {
-          toast("Iltimos, avval tizimga kiring!")
+          toast.error("Iltimos, avval tizimga kiring!")
           return
         }
 
         createDeal(
           { title, status, user_id: user.id, client_id: clientId! },
           {
-            onSuccess: () => setOpen(false),
+            onSuccess: () => {
+              setOpen(false)
+              reset()
+            },
             onError: (err) => console.error("Xatolik:", err),
           }
         )
@@ -102,7 +122,7 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
         </DialogTrigger>
 
         <DialogContent className="sm:max-w-sm">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="pb-3 text-center text-lg">
               <DialogTitle>{isEdit ? "Edit deal" : "Add Deal"}</DialogTitle>
             </div>
@@ -111,39 +131,57 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
               <Field>
                 <Label>Title</Label>
                 <Input
-                  name="title"
                   placeholder="Write deal"
-                  defaultValue={deal?.title ?? ""}
+                  {...register("title")}
                 />
+                {errors.title && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.title.message}
+                  </p>
+                )}
               </Field>
 
               <Field>
                 <Label>Status</Label>
+                <Controller
+                  control={control}
+                  name="status"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="w-full max-w-96">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
 
-                <Select name="status" defaultValue={deal?.status ?? "New"}>
-                  <SelectTrigger className="w-full max-w-96">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="New">New</SelectItem>
-                      <SelectItem value="In Progress">In Progress</SelectItem>
-                      <SelectItem value="Won">Won</SelectItem>
-                      <SelectItem value="Lost">Lost</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="New">New</SelectItem>
+                          <SelectItem value="In Progress">In Progress</SelectItem>
+                          <SelectItem value="Won">Won</SelectItem>
+                          <SelectItem value="Lost">Lost</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.status && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.status.message}
+                  </p>
+                )}
               </Field>
 
               <div className="flex items-end gap-2">
                 <div className="grid w-full gap-1.5">
                   <Label htmlFor="date">Today's Date</Label>
                   <Input
-                    name="date"
                     type="date"
-                    defaultValue={deal?.created_at?.split("T")[0]}
+                    {...register("date")}
                   />
+                  {errors.date && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.date.message}
+                    </p>
+                  )}
                 </div>
                 <Button type="submit" disabled={isPending}>
                   {isEdit ? (

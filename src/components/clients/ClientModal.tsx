@@ -1,3 +1,6 @@
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -12,40 +15,53 @@ import { useClientCreate, useClientUpdate } from "@/hooks/useClient"
 import type { ClientModalProps } from "@/interface/Interface"
 import { supabase } from "@/lib/supabase"
 import { Bookmark, Pencil, Plus } from "lucide-react"
-import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { clientSchema, type ClientValues } from "@/lib/validation"
 
 const ClientModal = ({ client }: ClientModalProps) => {
   const isEdit = !!client
   const [open, setOpen] = useState(false)
+
   const { mutate: editClient, isPending: updating } = useClientUpdate()
   const { mutate: createClient, isPending: creating } = useClientCreate()
-
   const isPending = creating || updating
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ClientValues>({
+    resolver: zodResolver(clientSchema),
+    values: {
+      name: client?.name ?? "",
+      email: client?.email ?? "",
+      phone: client?.phone ?? "",
+      company: client?.company ?? "",
+      date: client?.updated_at ? client.updated_at.split("T")[0] : "",
+    },
+  })
 
-    const formData = new FormData(e.currentTarget)
-    const name = formData.get("name") as string
-    const email = formData.get("email") as string
-    const phone = formData.get("phone") as string
-    const company = formData.get("company") as string
-    const date = formData.get("date") as string
+  useEffect(() => {
+    if (!open && !isEdit) {
+      reset()
+    }
+  }, [open, isEdit, reset])
 
-    if (!name.trim() || !email) return
-
+  const onSubmit = async (data: ClientValues) => {
     try {
       if (isEdit) {
         editClient(
           {
             id: client.id,
-            name,
-            email,
-            phone,
-            company,
-            created_at: date ? new Date(date).toISOString() : undefined,
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            company: data.company,
+            created_at: data.date
+              ? new Date(data.date).toISOString()
+              : undefined,
           },
           {
             onSuccess: () => setOpen(false),
@@ -57,20 +73,23 @@ const ClientModal = ({ client }: ClientModalProps) => {
         } = await supabase.auth.getUser()
 
         if (!user) {
-          toast("Iltimos, avval tizimga kiring!")
+          toast.error("Iltimos, avval tizimga kiring!")
           return
         }
 
         createClient(
           {
-            name,
-            email,
-            phone,
-            company,
+            name: data.name,
+            email: data.email,
+            phone: data.phone || null,
+            company: data.company || null,
             user_id: user.id,
           },
           {
-            onSuccess: () => setOpen(false),
+            onSuccess: () => {
+              setOpen(false)
+              reset()
+            },
             onError: (err) => console.error("Xatolik:", err),
           }
         )
@@ -79,7 +98,6 @@ const ClientModal = ({ client }: ClientModalProps) => {
       console.error("Kutilmagan xatolik yuz berdi:", error)
     }
   }
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -102,7 +120,7 @@ const ClientModal = ({ client }: ClientModalProps) => {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-sm">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="text-center text-lg">
             <DialogTitle>
               {isEdit ? "Edit client" : "Add new client"}
@@ -112,51 +130,53 @@ const ClientModal = ({ client }: ClientModalProps) => {
           <FieldGroup>
             <Field>
               <Label>Name</Label>
-              <Input
-                name="name"
-                placeholder="John Doe"
-                defaultValue={client?.name ?? ""}
-                required
-              />
+              <Input placeholder="John Doe" {...register("name")} />
+              {errors.name && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.name.message}
+                </p>
+              )}
             </Field>
 
             <Field>
               <Label>Email</Label>
-              <Input
-                name="email"
-                placeholder="example@gmail.com"
-                type="email"
-                defaultValue={client?.email ?? ""}
-              />
+              <Input placeholder="example@gmail.com" {...register("email")} />
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
             </Field>
 
             <Field>
               <Label>Phone number</Label>
-              <Input
-                name="phone"
-                placeholder="+123456789"
-                type="tel"
-                defaultValue={client?.phone ?? ""}
-              />
+              <Input placeholder="+123456789" {...register("phone")} />
+              {errors.phone && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.phone.message}
+                </p>
+              )}
             </Field>
 
             <Field>
               <Label>Company name</Label>
-              <Input
-                name="company"
-                placeholder="Google"
-                defaultValue={client?.company ?? ""}
-              />
+              <Input placeholder="GL Solutions" {...register("company")} />
+              {errors.company && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.company.message}
+                </p>
+              )}
             </Field>
 
             <div className="flex items-end gap-2">
               <div className="grid w-full gap-1.5">
                 <Label htmlFor="date">Today's Date</Label>
-                <Input
-                  name="date"
-                  type="date"
-                  defaultValue={client?.updated_at?.split("T")[0]}
-                />
+                <Input {...register("date")} />
+                {errors.date && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.date.message}
+                  </p>
+                )}
               </div>
 
               <Button type="submit" disabled={isPending}>

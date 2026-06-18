@@ -48,6 +48,7 @@ export const useUpdateTask = () => {
             .from("tasks")
             .update(updates)
             .eq("id", id)
+            .select()
             .single()
 
             if (error) throw error

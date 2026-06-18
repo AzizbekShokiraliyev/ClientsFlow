@@ -48,15 +48,8 @@ export interface TaskModalProps {
   task?: Task
 }
 
-export interface ClientDeal {
-  id: string
-  title: string
-  status: ClientDealStatus
-  created_at: string
-}
-
 export interface DealClientModalProps {
-  deal?: ClientDeal
+  deal?: Deal
 }
 
 export interface ClientModalProps {
