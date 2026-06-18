@@ -1,22 +1,46 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
+import type { Session } from "@supabase/supabase-js"
 import { supabase } from "@/lib/supabase"
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(true)
+  const location = useLocation()
+
+  // undefined = hali tekshirilmoqda
+  // null      = sessiya yo'q (login qilinmagan)
+  // Session   = sessiya bor (login qilingan)
+  const [session, setSession] = useState<Session | null | undefined>(undefined)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        navigate("/login")
-      }
-      setLoading(false)
+    // Ilova ochilganda sessiyani bir marta tekshiramiz
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session)
     })
-  }, [navigate])
 
-  if (loading) return <div>Loading...</div>
+    // Va keyin har qanday o'zgarishni (login, logout, token yangilanishi,
+    // boshqa tabda chiqib ketish va h.k.) real vaqtda kuzatamiz
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, newSession) => {
+        setSession(newSession)
+      }
+    )
 
+    return () => listener.subscription.unsubscribe()
+  }, [])
+
+  // Hali tekshirilmoqda — hech narsa (himoyalangan kontent) ko'rsatmaymiz
+  if (session === undefined) {
+    return <div>Loading...</div>
+  }
+
+  // Sessiya yo'q — RENDER paytida darhol Login'ga yo'naltiramiz.
+  // navigate() dan farqli o'laroq, bu yerda "children" hech qachon
+  // bir lahzaga ham qaytarilmaydi va ekranga chiqmaydi.
+  if (!session) {
+    return <Navigate to="/login" replace state={{ from: location }} />
+  }
+
+  // Sessiya bor — himoyalangan kontentni ko'rsatamiz
   return children
 }
 

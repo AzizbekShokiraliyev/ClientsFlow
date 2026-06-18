@@ -16,7 +16,6 @@ export const router = createBrowserRouter([
   { path: "/register", element: <Register /> },
 
   {
-    path: "/",
     element: (
       <ProtectedRoute>
         <MainLayout />
@@ -35,8 +34,6 @@ export const router = createBrowserRouter([
       { path: "kanban", element: <Kanban /> },
     ],
   },
-  {
-    path: "*",
-    element: <Navigate to="/" replace />,
-  },
+
+  { path: "*", element: <Navigate to="/" replace /> },
 ])
