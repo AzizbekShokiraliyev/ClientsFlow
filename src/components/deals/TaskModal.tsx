@@ -1,4 +1,4 @@
-import type { TaskStatus, TaskModalProps } from "@/interface/Interface"
+import type { TaskModalProps } from "@/interface/Interface"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Button } from "../ui/button"
 import { Bookmark, Pencil, Plus } from "lucide-react"
@@ -23,7 +23,6 @@ import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { taskSchema, type TaskValues } from "@/lib/validation"
 import { useEffect } from "react"
-
 
 const TaskModal = ({ task }: TaskModalProps) => {
   const isEdit = !!task
@@ -59,20 +58,15 @@ const TaskModal = ({ task }: TaskModalProps) => {
   }, [open, isEdit, reset])
 
   const onSubmit = async (data: TaskValues) => {
-    const title = data.title
-    const description = data.description
-    const status = data.status as TaskStatus
-    const date = data.date
-
     try {
       if (isEdit) {
         taskEdit(
           {
             id: task.id,
-            title,
-            description: description || null,
-            status,
-            due_date: date ? new Date(date).toISOString() : undefined,
+            title: data.title,
+            description: data.description || null,
+            status: data.status,
+            due_date: data.date ? new Date(data.date).toISOString() : undefined,
           },
           {
             onSuccess: () => setOpen(false),
@@ -90,12 +84,12 @@ const TaskModal = ({ task }: TaskModalProps) => {
 
         taskCreate(
           {
-            title,
-            status,
+            title: data.title,
+            status: data.status,
             user_id: user.id,
             deal_id: dealId!,
-            description: description || null,
-            due_date: date ? new Date(date).toISOString() : null,
+            description: data.description || null,
+            due_date: data.date ? new Date(data.date).toISOString() : null,
           },
           {
             onSuccess: () => {
@@ -139,10 +133,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
           <FieldGroup>
             <Field>
               <Label>Title</Label>
-              <Input
-                placeholder="Enter task name..."
-                {...register("title")}
-              />
+              <Input placeholder="Enter task name..." {...register("title")} />
               {errors.title && (
                 <p className="mt-1 text-xs text-red-500">
                   {errors.title.message}
@@ -194,10 +185,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
             <div className="mt-4 flex items-end gap-2">
               <div className="grid w-full gap-1.5">
                 <Label htmlFor="date">Due Date</Label>{" "}
-                <Input
-                  type="date"
-                  {...register("date")}
-                />
+                <Input type="date" {...register("date")} />
                 {errors.date && (
                   <p className="mt-1 text-xs text-red-500">
                     {errors.date.message}

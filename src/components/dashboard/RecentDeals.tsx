@@ -6,15 +6,16 @@ import type { ClientDealStatus } from "@/interface/Interface"
 
 export function RecentDeals() {
   const { data: deals } = useAllDeals()
+  const recentDeals = (deals ?? []).slice(0, 7)
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base font-semibold">
-          Recently Updated Deals
+        <CardTitle>
+          <div className="text-base font-semibold">Recently Updated Deals</div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2 px-2">
-        {(deals ?? []).map((deal) => (
+        {recentDeals.map((deal) => (
           <div
             key={deal.id}
             className="flex items-center justify-between rounded-lg border px-4 py-3"

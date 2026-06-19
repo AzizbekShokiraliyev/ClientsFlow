@@ -1,6 +1,5 @@
 import { z } from "zod"
 
-// Reusable Base Schemas
 export const emailSchema = z
   .string()
   .min(1, { message: "Email kiritilishi shart!" })
@@ -19,7 +18,6 @@ export const nameSchema = z
   .min(1, { message: "Nom/Ism kiritilishi shart!" })
   .trim()
 
-// Form Specific Schemas
 export const loginSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
@@ -55,7 +53,6 @@ export const taskSchema = z.object({
   date: z.string().optional(),
 })
 
-// Schema Types
 export type LoginValues = z.infer<typeof loginSchema>
 export type RegisterValues = z.infer<typeof registerSchema>
 export type ClientValues = z.infer<typeof clientSchema>

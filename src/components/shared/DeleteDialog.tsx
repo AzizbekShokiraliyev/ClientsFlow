@@ -8,21 +8,25 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import type { DeleteDialogProps } from "@/interface/Interface"
+import { Trash2 } from "lucide-react"
 
-interface DeleteDialogProps {
-  deleteTitle: string;
-  onConfirm: () => void;
-  disabled: boolean
-}
-
-export function DeleteDialog({ deleteTitle, onConfirm, disabled }: DeleteDialogProps) {
+export function DeleteDialog({
+  deleteTitle,
+  onConfirm,
+  disabled,
+}: DeleteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size="icon" className="rounded-none border-0 h-8 w-8 text-destructive hover:text-destructive" disabled={disabled}>
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8 rounded-none border-0 text-destructive hover:text-destructive"
+          disabled={disabled}
+        >
           <Trash2 className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>
@@ -30,16 +34,20 @@ export function DeleteDialog({ deleteTitle, onConfirm, disabled }: DeleteDialogP
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete <strong>{`${deleteTitle}`}</strong> and all associated data.
+            This will permanently delete <strong>{`${deleteTitle}`}</strong> and
+            all associated data.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} className="bg-destructive hover:bg-destructive/90">
+          <AlertDialogAction
+            onClick={onConfirm}
+            className="bg-destructive hover:bg-destructive/90"
+          >
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

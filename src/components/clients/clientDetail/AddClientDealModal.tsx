@@ -17,9 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select"
-import type {
-  DealClientModalProps,
-} from "@/interface/Interface"
+import type { DealClientModalProps } from "@/interface/Interface"
 import { useState, useEffect } from "react"
 import { useDealCreate, useDealUpdate } from "@/hooks/useDeal"
 import { supabase } from "@/lib/supabase"
@@ -32,9 +30,10 @@ import { dealSchema, type DealValues } from "@/lib/validation"
 const AddClientDealModal = ({ deal }: DealClientModalProps) => {
   const isEdit = !!deal
   const [open, setOpen] = useState(false)
+  const { clientId } = useParams()
+
   const { mutate: editDeal, isPending: Updating } = useDealUpdate()
   const { mutate: createDeal, isPending: Creating } = useDealCreate()
-  const { clientId } = useParams()
   const isPending = Creating || Updating
 
   const {
@@ -59,17 +58,16 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
   }, [open, isEdit, reset])
 
   const onSubmit = async (data: DealValues) => {
-    const title = data.title
-    const status = data.status
-    const date = data.date
     try {
       if (isEdit) {
         editDeal(
           {
             id: deal.id,
-            title,
-            status,
-            created_at: date ? new Date(date).toISOString() : undefined,
+            title: data.title,
+            status: data.status,
+            created_at: data.date
+              ? new Date(data.date).toISOString()
+              : undefined,
           },
           {
             onSuccess: () => setOpen(false),
@@ -86,7 +84,12 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
         }
 
         createDeal(
-          { title, status, user_id: user.id, client_id: clientId! },
+          {
+            title: data.title,
+            status: data.status,
+            user_id: user.id,
+            client_id: clientId!,
+          },
           {
             onSuccess: () => {
               setOpen(false)
@@ -130,10 +133,7 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
             <FieldGroup>
               <Field>
                 <Label>Title</Label>
-                <Input
-                  placeholder="Write deal"
-                  {...register("title")}
-                />
+                <Input placeholder="Write deal" {...register("title")} />
                 {errors.title && (
                   <p className="mt-1 text-xs text-red-500">
                     {errors.title.message}
@@ -155,7 +155,9 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
                       <SelectContent>
                         <SelectGroup>
                           <SelectItem value="New">New</SelectItem>
-                          <SelectItem value="In Progress">In Progress</SelectItem>
+                          <SelectItem value="In Progress">
+                            In Progress
+                          </SelectItem>
                           <SelectItem value="Won">Won</SelectItem>
                           <SelectItem value="Lost">Lost</SelectItem>
                         </SelectGroup>
@@ -173,10 +175,7 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
               <div className="flex items-end gap-2">
                 <div className="grid w-full gap-1.5">
                   <Label htmlFor="date">Today's Date</Label>
-                  <Input
-                    type="date"
-                    {...register("date")}
-                  />
+                  <Input type="date" {...register("date")} />
                   {errors.date && (
                     <p className="mt-1 text-xs text-red-500">
                       {errors.date.message}

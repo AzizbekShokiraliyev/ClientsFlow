@@ -36,83 +36,89 @@ const Sidebar = () => {
   }
 
   return (
-    <MainSidebar className="w-64 border-none">
-      <SidebarHeader className="px-5 py-6">
-        <div className="flex items-center gap-3">
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-black shadow-lg dark:bg-white">
-            <span className="text-sm font-black text-white dark:text-black">
-              CF
-            </span>
+    <div className="w-64 border-none">
+      <MainSidebar>
+        <SidebarHeader>
+          <div className="px-5 py-6">
+            <div className="flex items-center gap-3">
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-black shadow-lg dark:bg-white">
+                <span className="text-sm font-black text-white dark:text-black">
+                  CF
+                </span>
+              </div>
+              <div>
+                <p className="text-sm leading-none font-bold">ClientFlow</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">
+                  Pro workspace
+                </p>
+              </div>
+            </div>
           </div>
-          <div>
-            <p className="text-sm leading-none font-bold">ClientFlow</p>
-            <p className="mt-0.5 text-[11px] text-muted-foreground">
-              Pro workspace
+        </SidebarHeader>
+
+        <SidebarContent>
+          <div className="px-3">
+            <p className="mb-3 px-3 text-[10px] font-semibold tracking-[0.15em] text-muted-foreground/60 uppercase">
+              Workspace
             </p>
-          </div>
-        </div>
-      </SidebarHeader>
 
-      <SidebarContent className="px-3">
-        <p className="mb-3 px-3 text-[10px] font-semibold tracking-[0.15em] text-muted-foreground/60 uppercase">
-          Workspace
-        </p>
+            <SidebarMenu>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.path}>
+                  <SidebarMenuButton asChild className="h-auto p-0">
+                    <NavLink to={item.path}>
+                      {({ isActive }) => (
+                        <div
+                          className={`group relative flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 ${isActive ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"}`}
+                        >
+                          {isActive && (
+                            <div className="absolute top-1/2 left-0 h-5 w-0.5 -translate-y-1/2 rounded-full bg-background/40" />
+                          )}
 
-        <SidebarMenu className="gap-0.5">
-          {navItems.map((item) => (
-            <SidebarMenuItem key={item.path}>
-              <SidebarMenuButton asChild className="h-auto p-0">
-                <NavLink to={item.path}>
-                  {({ isActive }) => (
-                    <div
-                      className={`group relative flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 ${isActive ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"}`}
-                    >
-                      {isActive && (
-                        <div className="absolute top-1/2 left-0 h-5 w-0.5 -translate-y-1/2 rounded-full bg-background/40" />
+                          <div
+                            className={`flex h-7 w-7 items-center justify-center rounded-lg transition-all ${
+                              isActive
+                                ? "bg-background/15"
+                                : "bg-muted group-hover:bg-background"
+                            } `}
+                          >
+                            <item.icon className="h-3.5 w-3.5" />
+                          </div>
+
+                          <span className="flex-1 text-sm font-medium">
+                            {item.label}
+                          </span>
+
+                          <ChevronRight
+                            className={`h-3.5 w-3.5 transition-all duration-200 ${isActive ? "opacity-60" : "opacity-0 group-hover:opacity-40"} `}
+                          />
+                        </div>
                       )}
-
-                      <div
-                        className={`flex h-7 w-7 items-center justify-center rounded-lg transition-all ${
-                          isActive
-                            ? "bg-background/15"
-                            : "bg-muted group-hover:bg-background"
-                        } `}
-                      >
-                        <item.icon className="h-3.5 w-3.5" />
-                      </div>
-
-                      <span className="flex-1 text-sm font-medium">
-                        {item.label}
-                      </span>
-
-                      <ChevronRight
-                        className={`h-3.5 w-3.5 transition-all duration-200 ${isActive ? "opacity-60" : "opacity-0 group-hover:opacity-40"} `}
-                      />
-                    </div>
-                  )}
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarContent>
-
-      <SidebarFooter className="px-3 py-4">
-        <div
-          className="mx-1 cursor-pointer rounded-xl border border-border/50 bg-muted/30 p-3"
-          onClick={handleLogout}
-        >
-          <div className="flex items-center gap-12">
-            <p className="truncate text-sm leading-none font-semibold">
-              Tizimdan chiqish
-            </p>
-            <Button size="icon">
-              <LogOut />
-            </Button>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
           </div>
-        </div>
-      </SidebarFooter>
-    </MainSidebar>
+        </SidebarContent>
+
+        <SidebarFooter>
+          <div
+            className="mx-1 cursor-pointer rounded-xl border border-border/50 bg-muted/30 p-3"
+            onClick={handleLogout}
+          >
+            <div className="flex items-center gap-12">
+              <p className="truncate text-sm leading-none font-semibold">
+                Tizimdan chiqish
+              </p>
+              <Button size="icon">
+                <LogOut />
+              </Button>
+            </div>
+          </div>
+        </SidebarFooter>
+      </MainSidebar>
+    </div>
   )
 }
 

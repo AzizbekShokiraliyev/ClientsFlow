@@ -48,6 +48,7 @@ const ClientModal = ({ client }: ClientModalProps) => {
       reset()
     }
   }, [open, isEdit, reset])
+  //tassavur qil user client qoshmoqchi malumotyozdi lekin fikridan qaytdi shu paytda bu effect uni tozalaydi
 
   const onSubmit = async (data: ClientValues) => {
     try {

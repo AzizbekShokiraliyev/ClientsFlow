@@ -91,3 +91,9 @@ export interface ExportCsvButtonProps {
   headers: string[]
   keys: string[]
 }
+
+export interface DeleteDialogProps {
+  deleteTitle: string;
+  onConfirm: () => void;
+  disabled: boolean
+}

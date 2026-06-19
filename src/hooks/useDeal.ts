@@ -1,7 +1,7 @@
 import type { Deal } from "@/interface/Interface"
 import { supabase } from "@/lib/supabase"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-
+//useQueryClient kechlash va malumotlarni boshqarish
 
 export const useAllDeals = () => {
     return useQuery({
@@ -11,13 +11,12 @@ export const useAllDeals = () => {
             .from("deals")
             .select("*")
             .order("created_at", { ascending: false })
-            .limit(7)
 
             if (error) throw error
             return data
         },
     })
-}
+} 
 
 
 export const useDealById = (clientId?: string) => {
