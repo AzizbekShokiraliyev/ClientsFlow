@@ -5,7 +5,7 @@ import type { KanbanCardProps } from "@/interface/Interface"
 import { User } from "lucide-react"
 
 export const KanbanCard = ({ deal }: KanbanCardProps) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
+  const { listeners, setNodeRef, transform, transition, attributes } =
     useSortable({
       id: deal.id,
     })

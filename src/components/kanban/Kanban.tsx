@@ -8,7 +8,7 @@ import {
 } from "@dnd-kit/core"
 import { KanbanColumn } from "./KanbanColumn"
 import { KanbanCard } from "./KanbanCard"
-import type { ClientDealStatus, KanbanDeal } from "@/interface/Interface" // KanbanDeal tipini moslang
+import type { ClientDealStatus, KanbanDeal } from "@/interface/Interface"
 import { useKanbanDeals, useKanbanStatusUpdate } from "@/hooks/useKanban"
 
 const STATUSES: ClientDealStatus[] = ["New", "In Progress", "Won", "Lost"]
@@ -17,10 +17,8 @@ const Kanban = () => {
   const { data: deals = [], isLoading, isError } = useKanbanDeals()
   const { mutate: updateStatus } = useKanbanStatusUpdate()
 
-  // Drag bo'layotgan kartani eslab qolish uchun state
   const [activeDeal, setActiveDeal] = useState<KanbanDeal | null>(null)
 
-  // ID orqali uning qaysi ustunda ekanligini aniqlash funksiyasi
   const findColumnStatus = (id: string): ClientDealStatus | null => {
     if (STATUSES.includes(id as ClientDealStatus)) {
       return id as ClientDealStatus
@@ -36,7 +34,7 @@ const Kanban = () => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
-    setActiveDeal(null) // Reset overlay
+    setActiveDeal(null)
 
     if (!over) return
 
@@ -48,7 +46,6 @@ const Kanban = () => {
 
     if (!activeContainer || !overContainer) return
 
-    // Agar boshqa ustunga tashlangan bo'lsa, statusni yangilaymiz
     if (activeContainer !== overContainer) {
       updateStatus({ id: activeId, status: overContainer })
     }
@@ -60,7 +57,6 @@ const Kanban = () => {
 
   return (
     <div className="h-full overflow-x-auto p-6">
-      {/* Kanban uchun collisionDetection: pointerWithin eng yaxshisi hisoblanadi */}
       <DndContext
         collisionDetection={pointerWithin}
         onDragStart={handleDragStart}
@@ -76,7 +72,6 @@ const Kanban = () => {
           ))}
         </div>
 
-        {/* Chiroyli va silliq sudrash effekti uchun Overlay */}
         <DragOverlay>
           {activeDeal ? (
             <div className="scale-105 rotate-2 opacity-80 transition-transform">
