@@ -5,23 +5,26 @@ import { supabase } from "@/lib/supabase"
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
-  const [session, setSession] = useState<Session | null | undefined>(undefined)
+  const [session, setSession] = useState<Session | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
+      setIsLoading(false)
     })
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, newSession) => {
         setSession(newSession)
+        setIsLoading(false)
       }
     )
 
     return () => listener.subscription.unsubscribe()
   }, [])
 
-  if (session === undefined) {
+  if (isLoading) {
     return <div>Loading...</div>
   }
 

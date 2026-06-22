@@ -2,13 +2,13 @@ import { Users, Handshake, ListTodo } from "lucide-react"
 import { StatCard } from "@/components/dashboard/StatCard"
 import { RecentDeals } from "@/components/dashboard/RecentDeals"
 import { useClient } from "@/hooks/useClient"
-import { AllTask } from "@/hooks/useTask"
 import { useAllDeals } from "@/hooks/useDeal"
+import { useAllTask } from "@/hooks/useTask"
 
 export default function Dashboard() {
   const { data: clients } = useClient()
   const { data: deals } = useAllDeals()
-  const { data: tasks } = AllTask()
+  const { data: tasks } = useAllTask()
 
   const statCardInfo = [
     {

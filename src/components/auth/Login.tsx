@@ -7,31 +7,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group"
-import { EyeIcon, EyeOffIcon } from "lucide-react"
+import { supabase } from "@/lib/supabase"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { supabase } from "@/lib/supabase"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema, type LoginValues } from "@/lib/validation"
+import EmailField from "./shared/EmailField"
+import PasswordField from "./shared/PasswordField"
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -39,7 +31,6 @@ const Login = () => {
 
   const onSubmit = async (data: LoginValues) => {
     setError("")
-    setLoading(true)
 
     const { error } = await supabase.auth.signInWithPassword({
       email: data.email,
@@ -51,8 +42,6 @@ const Login = () => {
     } else {
       navigate("/dashboard")
     }
-
-    setLoading(false)
   }
 
   return (
@@ -67,54 +56,13 @@ const Login = () => {
 
         <CardContent>
           <form className="grid gap-4 px-4" onSubmit={handleSubmit(onSubmit)}>
-            <FieldGroup>
-              <Field>
-                <FieldLabel>Email</FieldLabel>
-                <Input
-                  type="email"
-                  placeholder="example@gmail.com"
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="mt-1 text-xs text-destructive">
-                    {errors.email.message}
-                  </p>
-                )}
-              </Field>
-            </FieldGroup>
-
-            <FieldGroup>
-              <Field>
-                <FieldLabel>Password</FieldLabel>
-                <InputGroup>
-                  <InputGroupInput
-                    type={showPassword ? "text" : "password"}
-                    placeholder="********"
-                    {...register("password")}
-                  />
-                  <InputGroupAddon align="inline-end">
-                    <Button
-                      size="icon"
-                      type="button"
-                      variant="ghost"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeIcon /> : <EyeOffIcon />}
-                    </Button>
-                  </InputGroupAddon>
-                </InputGroup>
-                {errors.password && (
-                  <p className="mt-1 text-xs text-destructive">
-                    {errors.password.message}
-                  </p>
-                )}
-              </Field>
-            </FieldGroup>
+            <EmailField register={register} error={errors.email} />
+            <PasswordField register={register} error={errors.password} />
 
             {error && <p className="text-sm text-red-500">{error}</p>}
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Loading..." : "Login"}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Loading..." : "Login"}
             </Button>
           </form>
         </CardContent>

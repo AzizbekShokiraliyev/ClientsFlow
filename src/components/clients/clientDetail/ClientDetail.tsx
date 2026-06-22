@@ -14,22 +14,15 @@ import {
   Briefcase,
 } from "lucide-react"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../ui/table"
 import { ButtonGroup, ButtonGroupSeparator } from "../../ui/button-group"
 import AddClientDealModal from "./AddClientDealModal"
 import { DeleteDialog } from "../../shared/DeleteDialog"
 import { useDealById, useDealDelete } from "@/hooks/useDeal"
 import { cn } from "@/lib/utils"
-import type { ClientDealStatus } from "@/interface/Interface"
+import type { ClientDealStatus, ColumnDef, Deal } from "@/interface/Interface"
 import { ClientStatusStyles } from "@/components/shared/StyleStatus"
 import { useClientById } from "@/hooks/useClient"
+import { DataTable } from "@/components/shared/DataTable"
 
 const ClientDetail = () => {
   const navigate = useNavigate()
@@ -38,13 +31,34 @@ const ClientDetail = () => {
   const { mutate: dealDelete, isPending: deleting } = useDealDelete()
   const { data: client } = useClientById(clientId)
 
-  if (isLoading) return <div className="p-10 text-center">Loading deals...</div>
-  if (isError)
-    return (
-      <div className="p-10 text-center text-red-500">
-        An error occurred, please refresh the page.
-      </div>
-    )
+  const columns: ColumnDef<Deal>[] = [
+    {
+      header: "Deal Title",
+      render: (deal) => deal.title,
+    },
+    {
+      header: "Status",
+      render: (deal) => (
+        <span
+          className={cn(ClientStatusStyles[deal.status as ClientDealStatus])}
+        >
+          {deal.status}
+        </span>
+      ),
+    },
+    {
+      header: "Created Date",
+      render: (deal) => (
+        <div>
+          {new Date(deal.created_at).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </div>
+      ),
+    },
+  ]
 
   return (
     <div className="w-full space-y-6">
@@ -122,106 +136,46 @@ const ClientDetail = () => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <div className="flex flex-row items-center justify-between space-y-0 pb-4">
-            <div className="space-y-1">
-              <CardTitle>
-                <div className="flex items-center gap-2 text-lg font-bold tracking-tight">
-                  <Briefcase className="h-5 w-5 text-muted-foreground" />
-                  Deals Pipeline
-                </div>
-              </CardTitle>
-              <CardDescription>
-                Manage deals and revenue tracking for this client
-              </CardDescription>
-            </div>
-            <AddClientDealModal />
+      <CardHeader>
+        <div className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <div className="space-y-1">
+            <CardTitle>
+              <div className="flex items-center gap-2 text-lg font-bold tracking-tight">
+                <Briefcase className="h-5 w-5 text-muted-foreground" />
+                Deals Pipeline
+              </div>
+            </CardTitle>
+            <CardDescription>
+              Manage deals and revenue tracking for this client
+            </CardDescription>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Deal Title</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {(deals ?? []).length === 0 ? (
-                  <TableRow>
-                    <TableCell
-                      colSpan={4}
-                      className="py-12 text-center text-sm text-muted-foreground"
-                    >
-                      No active deals found for this client.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  (deals ?? []).map((deal) => (
-                    <TableRow
-                      key={deal.id}
-                      onClick={() =>
-                        navigate(`/clients/${clientId}/deals/${deal.id}`)
-                      }
-                      className="group cursor-pointer transition-colors hover:bg-muted/50"
-                    >
-                      <TableCell className="font-semibold text-foreground transition-colors group-hover:text-primary">
-                        {deal.title}
-                      </TableCell>
-
-                      <TableCell>
-                        <span
-                          className={cn(
-                            "inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-center text-xs font-medium",
-                            ClientStatusStyles[deal.status as ClientDealStatus]
-                          )}
-                        >
-                          {deal.status}
-                        </span>
-                      </TableCell>
-
-                      <TableCell className="text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1.5">
-                          {new Date(deal.created_at).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}
-                        </div>
-                      </TableCell>
-
-                      <TableCell
-                        className="text-right"
-                        onClick={(e) => e.stopPropagation()}
-                        onMouseDown={(e) => e.stopPropagation()}
-                      >
-                        <div className="inline-flex items-center divide-x overflow-hidden rounded-md border bg-background shadow-sm">
-                          <ButtonGroup>
-                            <AddClientDealModal deal={deal} />
-                            <ButtonGroupSeparator />
-                            <DeleteDialog
-                              deleteTitle={`${deal.title}`}
-                              onConfirm={() => dealDelete(deal.id)}
-                              disabled={deleting}
-                            />
-                          </ButtonGroup>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+          <AddClientDealModal />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <DataTable
+          columns={columns}
+          data={deals}
+          isLoading={isLoading}
+          isError={isError}
+          loadingText="Loading deals..."
+          emptyText="No active deals found for this client."
+          onRowClick={(deal) =>
+            navigate(`/clients/${clientId}/deals/${deal.id}`)
+          }
+          renderActions={(deal) => (
+            <ButtonGroup>
+              <AddClientDealModal deal={deal} />
+              <ButtonGroupSeparator />
+              <DeleteDialog
+                deleteTitle={`${deal.title}`}
+                onConfirm={() => dealDelete(deal.id)}
+                disabled={deleting}
+              />
+            </ButtonGroup>
+          )}
+        />
+      </CardContent>
     </div>
   )
 }

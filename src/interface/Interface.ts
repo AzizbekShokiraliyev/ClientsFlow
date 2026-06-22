@@ -1,7 +1,10 @@
+import type { LoginValues, RegisterValues } from "@/lib/validation";
 import type { ReactNode } from "react";
+import type { FieldError, UseFormRegister } from "react-hook-form";
 
 export type TaskStatus = "Todo" | "In Progress" | "Done";
 export type ClientDealStatus = "New" | "In Progress" | "Won" | "Lost";
+export type AuthValues = LoginValues | RegisterValues
 
 export interface Client {
   id: string
@@ -96,4 +99,35 @@ export interface DeleteDialogProps {
   deleteTitle: string;
   onConfirm: () => void;
   disabled: boolean
+}
+
+export interface EmailFieldProps {
+  register: UseFormRegister<AuthValues>
+  error?: FieldError
+}
+
+export interface PasswordFieldProps {
+  register: UseFormRegister<AuthValues>
+  error?: FieldError
+}
+
+export interface ColumnDef<T> {
+  header: string
+  className?: string // th uchun (masalan text-right)
+  cellClassName?: string // td uchun
+  render: (row: T) => React.ReactNode
+}
+
+export interface DataTableProps<T extends { id: string | number }> {
+  columns: ColumnDef<T>[]
+  data: T[] | undefined
+  isLoading?: boolean
+  isError?: boolean
+  loadingText?: string
+  errorText?: string
+  emptyText?: string
+  onRowClick?: (row: T) => void
+  /** Actions ustuni (oxirgi ustun) bo'lsa shu yerda beriladi */
+  renderActions?: (row: T) => React.ReactNode
+  actionsHeader?: string
 }

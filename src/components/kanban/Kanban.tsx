@@ -6,6 +6,8 @@ import {
   type DragStartEvent,
   pointerWithin,
 } from "@dnd-kit/core"
+import { arrayMove } from "@dnd-kit/sortable"
+import { useQueryClient } from "@tanstack/react-query"
 import { KanbanColumn } from "./KanbanColumn"
 import { KanbanCard } from "./KanbanCard"
 import type { ClientDealStatus, KanbanDeal } from "@/interface/Interface"
@@ -14,6 +16,7 @@ import { useKanbanDeals, useKanbanStatusUpdate } from "@/hooks/useKanban"
 const STATUSES: ClientDealStatus[] = ["New", "In Progress", "Won", "Lost"]
 
 const Kanban = () => {
+  const queryClient = useQueryClient()
   const { data: deals = [], isLoading, isError } = useKanbanDeals()
   const { mutate: updateStatus } = useKanbanStatusUpdate()
 
@@ -40,11 +43,26 @@ const Kanban = () => {
 
     const activeId = active.id as string
     const overId = over.id as string
+    if (activeId === overId) return
 
     const activeContainer = findColumnStatus(activeId)
     const overContainer = findColumnStatus(overId)
-
     if (!activeContainer || !overContainer) return
+
+    const activeIndex = deals.findIndex((d) => d.id === activeId)
+    const overIndex = deals.findIndex((d) => d.id === overId)
+    if (activeIndex === -1) return
+
+    // Tartibni hisoblaymiz
+    const reordered =
+      overIndex !== -1 ? arrayMove(deals, activeIndex, overIndex) : [...deals]
+
+    const finalItems = reordered.map((d) =>
+      d.id === activeId ? { ...d, status: overContainer } : d
+    )
+
+    // 2. UI'ni yangilaymiz
+    queryClient.setQueryData<KanbanDeal[]>(["kanban-deals"], finalItems)
 
     if (activeContainer !== overContainer) {
       updateStatus({ id: activeId, status: overContainer })

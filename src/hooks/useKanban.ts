@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import type { ClientDealStatus } from "@/interface/Interface"
+import type { ClientDealStatus, KanbanDeal } from "@/interface/Interface"
 
 export const useKanbanDeals = () => {
     return useQuery({
@@ -29,20 +29,26 @@ export const useKanbanDeals = () => {
 }
 
 export const useKanbanStatusUpdate = () => {
-    const queryClient = useQueryClient()
+  const queryClient = useQueryClient()
 
-    return useMutation({
-        mutationFn: async ({ id, status }: { id: string; status: ClientDealStatus }) => {
-            const { data, error } = await supabase
-                .from("deals")
-                .update({ status })
-                .eq("id", id)
-                .select()
-                .single()
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: ClientDealStatus }) => {
+      const { data, error } = await supabase
+        .from("deals")
+        .update({ status })
+        .eq("id", id)
+        .select()
+        .single()
 
-            if (error) throw error
-            return data
-        },
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["kanban-deals"] }),
-    })
+      if (error) throw error
+      return data
+    },
+    onSuccess: (updatedDeal) => {
+      queryClient.setQueryData(["kanban-deals"], (old: KanbanDeal[]) =>
+        old.map((d) =>
+          d.id === updatedDeal.id ? { ...d, status: updatedDeal.status } : d
+        )
+      )
+    },
+  })
 }

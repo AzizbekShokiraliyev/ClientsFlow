@@ -43,12 +43,13 @@ const ClientModal = ({ client }: ClientModalProps) => {
     },
   })
 
+  //tassavur qil user client qoshmoqchi malumotyozdi lekin fikridan qaytdi shu paytda bu effect uni tozalaydi
+
   useEffect(() => {
     if (!open && !isEdit) {
       reset()
     }
   }, [open, isEdit, reset])
-  //tassavur qil user client qoshmoqchi malumotyozdi lekin fikridan qaytdi shu paytda bu effect uni tozalaydi
 
   const onSubmit = async (data: ClientValues) => {
     try {
@@ -151,7 +152,11 @@ const ClientModal = ({ client }: ClientModalProps) => {
 
             <Field>
               <Label>Phone number</Label>
-              <Input placeholder="+123456789" {...register("phone")} />
+              <Input
+                type="tel"
+                placeholder="+123456789"
+                {...register("phone")}
+              />
               {errors.phone && (
                 <p className="mt-1 text-xs text-red-500">
                   {errors.phone.message}
@@ -172,7 +177,7 @@ const ClientModal = ({ client }: ClientModalProps) => {
             <div className="flex items-end gap-2">
               <div className="grid w-full gap-1.5">
                 <Label htmlFor="date">Today's Date</Label>
-                <Input {...register("date")} />
+                <Input type="date" {...register("date")} />
                 {errors.date && (
                   <p className="mt-1 text-xs text-red-500">
                     {errors.date.message}
