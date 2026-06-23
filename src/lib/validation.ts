@@ -35,14 +35,12 @@ export const clientSchema = z.object({
     .string()
     .email({ message: "Noto'g'ri email manzili kiritildi!" })
     .or(z.literal("")),
-  
   phone: z
     .string()
     .optional()
     .refine((val) => !val || /^\+?[0-9]+$/.test(val), {
       message: "Telefon raqami faqat raqamlardan iborat bo'lishi kerak (masalan: +998901234567)",
     }),
-
   company: z.string().optional(),
   date: z.string().optional(),
 })

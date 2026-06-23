@@ -1,4 +1,4 @@
-import { Bookmark, Pencil, Plus } from "lucide-react"
+import { Bookmark, ChevronDownIcon, Pencil, Plus } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -26,11 +26,22 @@ import { toast } from "sonner"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { dealSchema, type DealValues } from "@/lib/validation"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { format } from "date-fns"
 
 const AddClientDealModal = ({ deal }: DealClientModalProps) => {
   const isEdit = !!deal
   const [open, setOpen] = useState(false)
   const { clientId } = useParams()
+
+  const [date, setDate] = useState<Date | undefined>(
+    deal?.created_at ? new Date(deal.created_at) : undefined
+  )
 
   const { mutate: editDeal, isPending: Updating } = useDealUpdate()
   const { mutate: createDeal, isPending: Creating } = useDealCreate()
@@ -41,6 +52,7 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<DealValues>({
     resolver: zodResolver(dealSchema),
@@ -56,6 +68,20 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
       reset()
     }
   }, [open, isEdit, reset])
+
+  const handleDateSelect = (selected: Date | undefined) => {
+    setDate(selected)
+    setValue("date", selected ? format(selected, "yyyy-MM-dd") : "", {
+      shouldValidate: true,
+    })
+  }
+
+  const handleOpenChange = (val: boolean) => {
+    setOpen(val)
+    if (!val && !isEdit) {
+      setDate(undefined)
+    }
+  }
 
   const onSubmit = async (data: DealValues) => {
     try {
@@ -94,6 +120,7 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
             onSuccess: () => {
               setOpen(false)
               reset()
+              setDate(undefined)
             },
             onError: (err) => console.error("Xatolik:", err),
           }
@@ -106,7 +133,7 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
 
   return (
     <div>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           {isEdit ? (
             <Button
@@ -174,8 +201,27 @@ const AddClientDealModal = ({ deal }: DealClientModalProps) => {
 
               <div className="flex items-end gap-2">
                 <div className="grid w-full gap-1.5">
-                  <Label htmlFor="date">Today's Date</Label>
-                  <Input type="date" {...register("date")} />
+                  <Label>Deal Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        data-empty={!date}
+                        className="w-[270px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                      >
+                        {date ? format(date, "PPP") : <span>dd/mm/yyyy</span>}
+                        <ChevronDownIcon />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={handleDateSelect}
+                        defaultMonth={date}
+                      />
+                    </PopoverContent>
+                  </Popover>
                   {errors.date && (
                     <p className="mt-1 text-xs text-red-500">
                       {errors.date.message}

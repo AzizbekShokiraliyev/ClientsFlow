@@ -1,6 +1,7 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -14,14 +15,18 @@ import { Label } from "@/components/ui/label"
 import { useClientCreate, useClientUpdate } from "@/hooks/useClient"
 import type { ClientModalProps } from "@/interface/Interface"
 import { supabase } from "@/lib/supabase"
-import { Bookmark, Pencil, Plus } from "lucide-react"
-import { useState } from "react"
+import { Bookmark, ChevronDownIcon, Pencil, Plus } from "lucide-react"
 import { toast } from "sonner"
 import { clientSchema, type ClientValues } from "@/lib/validation"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { Calendar } from "../ui/calendar"
 
 const ClientModal = ({ client }: ClientModalProps) => {
   const isEdit = !!client
   const [open, setOpen] = useState(false)
+  const [date, setDate] = useState<Date | undefined>(
+    client?.updated_at ? new Date(client.updated_at) : undefined
+  )
 
   const { mutate: editClient, isPending: updating } = useClientUpdate()
   const { mutate: createClient, isPending: creating } = useClientCreate()
@@ -43,13 +48,22 @@ const ClientModal = ({ client }: ClientModalProps) => {
     },
   })
 
-  //tassavur qil user client qoshmoqchi malumotyozdi lekin fikridan qaytdi shu paytda bu effect uni tozalaydi
-
   useEffect(() => {
     if (!open && !isEdit) {
       reset()
     }
   }, [open, isEdit, reset])
+
+  const handleOpenChange = (val: boolean) => {
+    setOpen(val)
+    if (!val && !isEdit) {
+      setDate(undefined)
+    }
+  }
+
+  const handleDateSelect = (selected: Date | undefined) => {
+    setDate(selected)
+  }
 
   const onSubmit = async (data: ClientValues) => {
     try {
@@ -86,11 +100,15 @@ const ClientModal = ({ client }: ClientModalProps) => {
             phone: data.phone || null,
             company: data.company || null,
             user_id: user.id,
+            created_at: data.date // ✅ was missing
+              ? new Date(data.date).toISOString()
+              : new Date().toISOString(),
           },
           {
             onSuccess: () => {
               setOpen(false)
               reset()
+              setDate(undefined)
             },
             onError: (err) => console.error("Xatolik:", err),
           }
@@ -100,8 +118,9 @@ const ClientModal = ({ client }: ClientModalProps) => {
       console.error("Kutilmagan xatolik yuz berdi:", error)
     }
   }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {isEdit ? (
           <Button
@@ -176,13 +195,27 @@ const ClientModal = ({ client }: ClientModalProps) => {
 
             <div className="flex items-end gap-2">
               <div className="grid w-full gap-1.5">
-                <Label htmlFor="date">Today's Date</Label>
-                <Input type="date" {...register("date")} />
-                {errors.date && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors.date.message}
-                  </p>
-                )}
+                <Label>Today's Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      data-empty={!date}
+                      className="w-[270px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                    >
+                      {date ? format(date, "PPP") : <span>dd/mm/yyyy</span>}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={handleDateSelect}
+                      defaultMonth={date}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <Button type="submit" disabled={isPending}>

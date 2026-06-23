@@ -13,12 +13,12 @@ export interface Client {
   email: string | null
   phone: string | null
   company: string | null
-  created_at: string
+  created_at: string      
   updated_at: string
 }
 
 export interface ClientsTableProps {
-  data: Client[]; 
+  data: Client[];
 }
 
 export interface Deal {
@@ -113,8 +113,8 @@ export interface PasswordFieldProps {
 
 export interface ColumnDef<T> {
   header: string
-  className?: string // th uchun (masalan text-right)
-  cellClassName?: string // td uchun
+  className?: string
+  cellClassName?: string
   render: (row: T) => React.ReactNode
 }
 
@@ -127,7 +127,6 @@ export interface DataTableProps<T extends { id: string | number }> {
   errorText?: string
   emptyText?: string
   onRowClick?: (row: T) => void
-  /** Actions ustuni (oxirgi ustun) bo'lsa shu yerda beriladi */
   renderActions?: (row: T) => React.ReactNode
   actionsHeader?: string
 }

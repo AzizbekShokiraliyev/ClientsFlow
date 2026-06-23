@@ -1,7 +1,7 @@
 import type { TaskModalProps } from "@/interface/Interface"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Button } from "../ui/button"
-import { Bookmark, Pencil, Plus } from "lucide-react"
+import { Bookmark, ChevronDownIcon, Pencil, Plus } from "lucide-react"
 import { Field, FieldGroup } from "../ui/field"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
@@ -14,6 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { Calendar } from "../ui/calendar"
 import { useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { useCreateTask, useUpdateTask } from "@/hooks/useTask"
@@ -23,6 +25,7 @@ import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { taskSchema, type TaskValues } from "@/lib/validation"
 import { useEffect } from "react"
+import { format } from "date-fns"
 
 const TaskModal = ({ task }: TaskModalProps) => {
   const isEdit = !!task
@@ -33,11 +36,16 @@ const TaskModal = ({ task }: TaskModalProps) => {
 
   const isPending = isCreating || isUpdating
 
+  const [date, setDate] = useState<Date | undefined>(
+    task?.due_date ? new Date(task.due_date) : new Date()
+  )
+
   const {
     register,
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<TaskValues>({
     resolver: zodResolver(taskSchema),
@@ -56,6 +64,20 @@ const TaskModal = ({ task }: TaskModalProps) => {
       reset()
     }
   }, [open, isEdit, reset])
+
+  const handleDateSelect = (selected: Date | undefined) => {
+    setDate(selected)
+    setValue("date", selected ? format(selected, "yyyy-MM-dd") : "", {
+      shouldValidate: true,
+    })
+  }
+
+  const handleOpenChange = (val: boolean) => {
+    setOpen(val)
+    if (!val && !isEdit) {
+      setDate(new Date())
+    }
+  }
 
   const onSubmit = async (data: TaskValues) => {
     try {
@@ -95,6 +117,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
             onSuccess: () => {
               setOpen(false)
               reset()
+              setDate(new Date())
             },
             onError: (err) => console.error("Xatolik:", err),
           }
@@ -106,7 +129,7 @@ const TaskModal = ({ task }: TaskModalProps) => {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {isEdit ? (
           <Button
@@ -184,8 +207,27 @@ const TaskModal = ({ task }: TaskModalProps) => {
 
             <div className="mt-4 flex items-end gap-2">
               <div className="grid w-full gap-1.5">
-                <Label htmlFor="date">Due Date</Label>{" "}
-                <Input type="date" {...register("date")} />
+                <Label>Due Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      data-empty={!date}
+                      className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                    >
+                      {date ? format(date, "PPP") : <span>dd/mm/yyyy</span>}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={handleDateSelect}
+                      defaultMonth={date}
+                    />
+                  </PopoverContent>
+                </Popover>
                 {errors.date && (
                   <p className="mt-1 text-xs text-red-500">
                     {errors.date.message}
